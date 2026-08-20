@@ -1,5 +1,5 @@
 /**
- * Represents a task and whether it has been completed.
+ * Represents the shared description and completion state of a task.
  */
 public class Task {
     protected String description;
