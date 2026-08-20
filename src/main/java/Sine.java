@@ -44,6 +44,16 @@ public class Sine {
                     continue;
                 }
 
+                if (command.equals("delete") || command.startsWith("delete ")) {
+                    int taskIndex = parseTaskIndex(command.substring(6), tasks.size());
+                    Task removedTask = tasks.remove(taskIndex);
+                    System.out.println(" Roger that. I've removed this task:");
+                    System.out.println("   " + removedTask);
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+                    System.out.println(SEPARATOR);
+                    continue;
+                }
+
                 if (command.equals("unmark") || command.startsWith("unmark ")) {
                     int taskIndex = parseTaskIndex(command.substring(6), tasks.size());
                     tasks.get(taskIndex).markAsNotDone();
@@ -81,9 +91,9 @@ public class Sine {
     }
 
     /**
-     * Converts a user-supplied task number to its zero-based array index.
+     * Converts a user-supplied task number to its zero-based list index.
      *
-     * @param argument text following the mark or unmark command
+     * @param argument text following the delete, mark, or unmark command
      * @param taskCount number of tasks currently stored
      * @return zero-based index of the selected task
      * @throws SineException if the argument is not a valid stored task number
