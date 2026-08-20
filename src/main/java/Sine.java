@@ -24,6 +24,13 @@ public class Sine {
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
             System.out.println(SEPARATOR);
+
+            if (command.equals("bye")) {
+                System.out.println(" Bye! I'll be here if you need me :)");
+                System.out.println(SEPARATOR);
+                break;
+            }
+
             System.out.println(" " + command);
             System.out.println(SEPARATOR);
         }
