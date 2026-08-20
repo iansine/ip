@@ -20,6 +20,8 @@ public class Sine {
         System.out.println("What's up?");
         System.out.println(SEPARATOR);
 
+        String[] tasks = new String[100];
+        int taskCount = 0;
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -31,7 +33,9 @@ public class Sine {
                 break;
             }
 
-            System.out.println(" " + command);
+            tasks[taskCount] = command;
+            taskCount++;
+            System.out.println(" added: " + command);
             System.out.println(SEPARATOR);
         }
     }
