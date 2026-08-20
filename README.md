@@ -24,7 +24,10 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    Hello! I'm Sine.
    What's up?
    ____________________________________________________________
-   Bye. Catch you in a bit!
+
+   list
+   ____________________________________________________________
+    list
    ____________________________________________________________
    ```
 
