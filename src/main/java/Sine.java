@@ -86,6 +86,9 @@ public class Sine {
                 System.out.println("   " + newTask);
                 System.out.println(" Now you have " + taskCount + " tasks in the list.");
                 System.out.println(SEPARATOR);
+            } else {
+                System.out.println(" Must have been the wind");
+                System.out.println(SEPARATOR);
             }
         }
     }
