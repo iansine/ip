@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -20,8 +22,7 @@ public class Sine {
         System.out.println("What's up?");
         System.out.println(SEPARATOR);
 
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        List<Task> tasks = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -36,41 +37,37 @@ public class Sine {
 
                 if (command.equals("list")) {
                     System.out.println(" TODO list:");
-                    for (int i = 0; i < taskCount; i++) {
-                        System.out.println(" " + (i + 1) + "." + tasks[i]);
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println(" " + (i + 1) + "." + tasks.get(i));
                     }
                     System.out.println(SEPARATOR);
                     continue;
                 }
 
                 if (command.equals("unmark") || command.startsWith("unmark ")) {
-                    int taskIndex = parseTaskIndex(command.substring(6), taskCount);
-                    tasks[taskIndex].markAsNotDone();
+                    int taskIndex = parseTaskIndex(command.substring(6), tasks.size());
+                    tasks.get(taskIndex).markAsNotDone();
                     System.out.println(" Roger that. I've marked this task as not done yet:");
-                    System.out.println("   " + tasks[taskIndex]);
+                    System.out.println("   " + tasks.get(taskIndex));
                     System.out.println(SEPARATOR);
                     continue;
                 }
 
                 if (command.equals("mark") || command.startsWith("mark ")) {
-                    int taskIndex = parseTaskIndex(command.substring(4), taskCount);
-                    tasks[taskIndex].markAsDone();
+                    int taskIndex = parseTaskIndex(command.substring(4), tasks.size());
+                    tasks.get(taskIndex).markAsDone();
                     System.out.println(" Great work! I've marked this task as done:");
-                    System.out.println("   " + tasks[taskIndex]);
+                    System.out.println("   " + tasks.get(taskIndex));
                     System.out.println(SEPARATOR);
                     continue;
                 }
 
                 Task newTask = createTask(command);
                 if (newTask != null) {
-                    if (taskCount == tasks.length) {
-                        throw new SineException("The task list is full.");
-                    }
-                    tasks[taskCount] = newTask;
-                    taskCount++;
+                    tasks.add(newTask);
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + newTask);
-                    System.out.println(" Now you have " + taskCount + " tasks in the list.");
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(SEPARATOR);
                 } else {
                     System.out.println(" Must have been the wind");
