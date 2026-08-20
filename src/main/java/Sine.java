@@ -46,7 +46,7 @@ public class Sine {
                 int taskNumber = Integer.parseInt(command.substring(7));
                 int taskIndex = taskNumber - 1;
                 tasks[taskIndex].markAsNotDone();
-                System.out.println(" OK, I've marked this task as not done yet:");
+                System.out.println(" Roger that. I've marked this task as not done yet:");
                 System.out.println("   " + tasks[taskIndex]);
                 System.out.println(SEPARATOR);
                 continue;
@@ -56,7 +56,7 @@ public class Sine {
                 int taskNumber = Integer.parseInt(command.substring(5));
                 int taskIndex = taskNumber - 1;
                 tasks[taskIndex].markAsDone();
-                System.out.println(" Nice! I've marked this task as done:");
+                System.out.println(" Great work! I've marked this task as done:");
                 System.out.println("   " + tasks[taskIndex]);
                 System.out.println(SEPARATOR);
                 continue;
