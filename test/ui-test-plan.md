@@ -64,6 +64,53 @@ ____________________________________________________________
 ____________________________________________________________
 ```
 
+## Test case: Reject malformed commands with exceptions
+
+Aim: Verify that malformed task and status commands report chatbot-specific errors and allow the session to continue.
+
+### Inputs
+
+```text
+todo
+deadline submit report
+event project meeting /from Monday
+mark abc
+mark 1
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ ____  _            
+/ ___|(_)_ __   ___ 
+\___ \| | '_ \ / _ \
+ ___) | | | | |  __/
+|____/|_|_| |_|\___|
+Hello! I'm Sine.
+What's up?
+____________________________________________________________
+____________________________________________________________
+ Error :( The description of a todo cannot be empty.
+____________________________________________________________
+____________________________________________________________
+ Error :( The deadline of a deadline cannot be empty.
+____________________________________________________________
+____________________________________________________________
+ Error :( The start time of an event cannot be empty.
+____________________________________________________________
+____________________________________________________________
+ Error :( Please enter a valid task number.
+____________________________________________________________
+____________________________________________________________
+ Error :( That task number does not exist.
+____________________________________________________________
+____________________________________________________________
+ Bye. I'll be here if you need me :)
+____________________________________________________________
+```
+
 ## Test case: Reject an unknown command
 
 Aim: Verify that an unrecognized command is not added as a task and receives the fallback response.
