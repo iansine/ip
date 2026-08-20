@@ -28,9 +28,17 @@ public class Sine {
             System.out.println(SEPARATOR);
 
             if (command.equals("bye")) {
-                System.out.println(" Bye! I'll be here if you need me :)");
+                System.out.println(" Bye. I'll be here if you need me :)");
                 System.out.println(SEPARATOR);
                 break;
+            }
+
+            if (command.equals("list")) {
+                for (int i = 0; i < taskCount; i++) {
+                    System.out.println(" " + (i + 1) + ". " + tasks[i]);
+                }
+                System.out.println(SEPARATOR);
+                continue;
             }
 
             tasks[taskCount] = command;
