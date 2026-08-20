@@ -35,11 +35,21 @@ public class Sine {
             }
 
             if (command.equals("list")) {
-                System.out.println(" Here are the tasks in your list:");
+                System.out.println(" TODO list:");
                 for (int i = 0; i < taskCount; i++) {
                     String status = isDone[i] ? "X" : " ";
                     System.out.println(" " + (i + 1) + ".[" + status + "] " + tasks[i]);
                 }
+                System.out.println(SEPARATOR);
+                continue;
+            }
+
+            if (command.startsWith("unmark ")) {
+                int taskNumber = Integer.parseInt(command.substring(7));
+                int taskIndex = taskNumber - 1;
+                isDone[taskIndex] = false;
+                System.out.println(" OK, I've marked this task as not done yet:");
+                System.out.println("   [ ] " + tasks[taskIndex]);
                 System.out.println(SEPARATOR);
                 continue;
             }
