@@ -28,11 +28,11 @@ public class Sine {
         System.out.println("What's up?");
         System.out.println(SEPARATOR);
 
-        List<Task> tasks;
+        TaskList tasks;
         try {
-            tasks = loadTasks();
+            tasks = new TaskList(loadTasks());
         } catch (IOException exception) {
-            tasks = new ArrayList<>();
+            tasks = new TaskList();
             System.out.println(" Warning: I couldn't load your saved tasks."
                     + " Starting with an empty list.");
             System.out.println(SEPARATOR);
@@ -60,8 +60,8 @@ public class Sine {
 
                 if (command.equals("delete") || command.startsWith("delete ")) {
                     int taskIndex = parseTaskIndex(command.substring(6), tasks.size());
-                    Task removedTask = tasks.remove(taskIndex);
-                    saveTasks(tasks);
+                    Task removedTask = tasks.delete(taskIndex);
+                    saveTasks(tasks.getTasks());
                     System.out.println(" Roger that. I've removed this task:");
                     System.out.println("   " + removedTask);
                     System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
@@ -72,7 +72,7 @@ public class Sine {
                 if (command.equals("unmark") || command.startsWith("unmark ")) {
                     int taskIndex = parseTaskIndex(command.substring(6), tasks.size());
                     tasks.get(taskIndex).markAsNotDone();
-                    saveTasks(tasks);
+                    saveTasks(tasks.getTasks());
                     System.out.println(" Roger that. I've marked this task as not done yet:");
                     System.out.println("   " + tasks.get(taskIndex));
                     System.out.println(SEPARATOR);
@@ -82,7 +82,7 @@ public class Sine {
                 if (command.equals("mark") || command.startsWith("mark ")) {
                     int taskIndex = parseTaskIndex(command.substring(4), tasks.size());
                     tasks.get(taskIndex).markAsDone();
-                    saveTasks(tasks);
+                    saveTasks(tasks.getTasks());
                     System.out.println(" Great work! I've marked this task as done:");
                     System.out.println("   " + tasks.get(taskIndex));
                     System.out.println(SEPARATOR);
@@ -92,7 +92,7 @@ public class Sine {
                 Task newTask = createTask(command);
                 if (newTask != null) {
                     tasks.add(newTask);
-                    saveTasks(tasks);
+                    saveTasks(tasks.getTasks());
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + newTask);
                     System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
