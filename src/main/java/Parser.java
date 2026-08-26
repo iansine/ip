@@ -42,21 +42,29 @@ public class Parser {
     }
 
     /**
-     * Parses a command that does not modify the task list.
+     * Parses any command except one that adds a new task.
      *
-     * <p>This transitional method returns {@code null} for mutating commands, which will be
-     * extracted into command classes in later increments.</p>
+     * <p>This transitional method returns {@code null} only for add-task commands, which will
+     * be extracted in the next increment.</p>
      *
      * @param command raw user command
-     * @return exit, list, or unknown command object; null for a mutating command
+     * @param taskCount number of tasks currently stored
+     * @return parsed command object; null for an add-task command
+     * @throws SineException if a task number is invalid
      */
-    public Command parseNonMutatingCommand(String command) {
+    public Command parseCommandExceptAdd(String command, int taskCount) throws SineException {
         CommandType commandType = getCommandType(command);
         switch (commandType) {
         case BYE:
             return new ExitCommand();
         case LIST:
             return new ListCommand();
+        case DELETE:
+            return new DeleteCommand(parseTaskIndex(command, taskCount));
+        case UNMARK:
+            return new UnmarkCommand(parseTaskIndex(command, taskCount));
+        case MARK:
+            return new MarkCommand(parseTaskIndex(command, taskCount));
         case UNKNOWN:
             return new UnknownCommand();
         default:
@@ -72,7 +80,7 @@ public class Parser {
      * @return zero-based index of the selected task
      * @throws SineException if the argument is not a valid stored task number
      */
-    public int parseTaskIndex(String command, int taskCount) throws SineException {
+    private int parseTaskIndex(String command, int taskCount) throws SineException {
         int firstSpace = command.indexOf(' ');
         String argument = firstSpace < 0 ? "" : command.substring(firstSpace + 1);
         int taskNumber;
