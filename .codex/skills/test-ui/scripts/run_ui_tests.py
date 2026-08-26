@@ -20,6 +20,7 @@ class TestCase:
     aim: str
     inputs: str
     expected: str
+    initial_data: str | None
 
 
 def normalize_output(output: str) -> str:
@@ -43,6 +44,11 @@ def load_cases(plan_path: Path) -> list[TestCase]:
             body,
             re.MULTILINE | re.DOTALL,
         )
+        initial_data_match = re.search(
+            r"^### Initial data\s+```text\n(.*?)^```$",
+            body,
+            re.MULTILINE | re.DOTALL,
+        )
         if not (aim_match and inputs_match and expected_match):
             raise ValueError(f"Incomplete test case '{name}' in {plan_path}")
         cases.append(
@@ -51,6 +57,9 @@ def load_cases(plan_path: Path) -> list[TestCase]:
                 aim=aim_match.group(1),
                 inputs=inputs_match.group(1),
                 expected=expected_match.group(1),
+                initial_data=(
+                    initial_data_match.group(1) if initial_data_match else None
+                ),
             )
         )
     if not cases:
@@ -105,13 +114,21 @@ def main() -> int:
         for position, case in enumerate(cases, start=1):
             inputs = normalize_output(case.inputs)
             expected = normalize_output(case.expected)
-            result = subprocess.run(
-                [str(java), "-cp", class_dir, args.main_class],
-                input=inputs,
-                text=True,
-                capture_output=True,
-                check=False,
-            )
+            with tempfile.TemporaryDirectory(prefix="sine-ui-case-") as case_dir:
+                if case.initial_data is not None:
+                    data_dir = Path(case_dir) / "data"
+                    data_dir.mkdir()
+                    (data_dir / "sine.txt").write_text(
+                        normalize_output(case.initial_data), encoding="utf-8"
+                    )
+                result = subprocess.run(
+                    [str(java), "-cp", class_dir, args.main_class],
+                    input=inputs,
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                    cwd=case_dir,
+                )
             actual = normalize_output(result.stdout)
 
             print(f"=== Test case {position}: {case.name} ===")
