@@ -1,6 +1,4 @@
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 /**
@@ -24,6 +22,7 @@ public class Sine {
         System.out.println(SEPARATOR);
 
         Storage storage = new Storage("data/sine.txt");
+        Parser parser = new Parser();
         TaskList tasks;
         try {
             tasks = new TaskList(storage.load());
@@ -39,13 +38,14 @@ public class Sine {
             System.out.println(SEPARATOR);
 
             try {
-                if (command.equals("bye")) {
+                Parser.CommandType commandType = parser.getCommandType(command);
+                if (commandType == Parser.CommandType.BYE) {
                     System.out.println(" Bye. I'll be here if you need me :)");
                     System.out.println(SEPARATOR);
                     break;
                 }
 
-                if (command.equals("list")) {
+                if (commandType == Parser.CommandType.LIST) {
                     System.out.println(" TODO list:");
                     for (int i = 0; i < tasks.size(); i++) {
                         System.out.println(" " + (i + 1) + "." + tasks.get(i));
@@ -54,8 +54,8 @@ public class Sine {
                     continue;
                 }
 
-                if (command.equals("delete") || command.startsWith("delete ")) {
-                    int taskIndex = parseTaskIndex(command.substring(6), tasks.size());
+                if (commandType == Parser.CommandType.DELETE) {
+                    int taskIndex = parser.parseTaskIndex(command, tasks.size());
                     Task removedTask = tasks.delete(taskIndex);
                     storage.save(tasks.getTasks());
                     System.out.println(" Roger that. I've removed this task:");
@@ -65,8 +65,8 @@ public class Sine {
                     continue;
                 }
 
-                if (command.equals("unmark") || command.startsWith("unmark ")) {
-                    int taskIndex = parseTaskIndex(command.substring(6), tasks.size());
+                if (commandType == Parser.CommandType.UNMARK) {
+                    int taskIndex = parser.parseTaskIndex(command, tasks.size());
                     tasks.get(taskIndex).markAsNotDone();
                     storage.save(tasks.getTasks());
                     System.out.println(" Roger that. I've marked this task as not done yet:");
@@ -75,8 +75,8 @@ public class Sine {
                     continue;
                 }
 
-                if (command.equals("mark") || command.startsWith("mark ")) {
-                    int taskIndex = parseTaskIndex(command.substring(4), tasks.size());
+                if (commandType == Parser.CommandType.MARK) {
+                    int taskIndex = parser.parseTaskIndex(command, tasks.size());
                     tasks.get(taskIndex).markAsDone();
                     storage.save(tasks.getTasks());
                     System.out.println(" Great work! I've marked this task as done:");
@@ -85,18 +85,19 @@ public class Sine {
                     continue;
                 }
 
-                Task newTask = createTask(command);
-                if (newTask != null) {
+                if (commandType == Parser.CommandType.ADD_TASK) {
+                    Task newTask = parser.parseTask(command);
                     tasks.add(newTask);
                     storage.save(tasks.getTasks());
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + newTask);
                     System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
                     System.out.println(SEPARATOR);
-                } else {
-                    System.out.println(" Must have been the wind");
-                    System.out.println(SEPARATOR);
+                    continue;
                 }
+
+                System.out.println(" Must have been the wind");
+                System.out.println(SEPARATOR);
             } catch (SineException exception) {
                 System.out.println(" Error :( " + exception.getMessage());
                 System.out.println(SEPARATOR);
@@ -108,81 +109,4 @@ public class Sine {
         }
     }
 
-    /**
-     * Converts a user-supplied task number to its zero-based list index.
-     *
-     * @param argument text following the delete, mark, or unmark command
-     * @param taskCount number of tasks currently stored
-     * @return zero-based index of the selected task
-     * @throws SineException if the argument is not a valid stored task number
-     */
-    private static int parseTaskIndex(String argument, int taskCount) throws SineException {
-        int taskNumber;
-        try {
-            taskNumber = Integer.parseInt(argument.trim());
-        } catch (NumberFormatException exception) {
-            throw new SineException("Please enter a valid task number.");
-        }
-
-        if (taskNumber < 1 || taskNumber > taskCount) {
-            throw new SineException("That task number does not exist.");
-        }
-        return taskNumber - 1;
-    }
-
-    /**
-     * Creates the task described by a command after validating its required fields.
-     *
-     * @param command command entered by the user
-     * @return a new task, or {@code null} if the command is not a task command
-     * @throws SineException if a required task field is missing
-     */
-    private static Task createTask(String command) throws SineException {
-        if (command.equals("todo") || command.startsWith("todo ")) {
-            String description = command.substring(4).trim();
-            if (description.isEmpty()) {
-                throw new SineException("The description of a todo cannot be empty.");
-            }
-            return new Todo(description);
-        }
-
-        if (command.equals("deadline") || command.startsWith("deadline ")) {
-            String details = command.substring(8).trim();
-            int byIndex = details.indexOf("/by");
-            String description = byIndex < 0 ? details : details.substring(0, byIndex).trim();
-            if (description.isEmpty()) {
-                throw new SineException("The description of a deadline cannot be empty.");
-            }
-            if (byIndex < 0 || details.substring(byIndex + 3).trim().isEmpty()) {
-                throw new SineException("The deadline of a deadline cannot be empty.");
-            }
-            String dateText = details.substring(byIndex + 3).trim();
-            try {
-                return new Deadline(description, LocalDate.parse(dateText));
-            } catch (DateTimeParseException exception) {
-                throw new SineException("Please enter the deadline as yyyy-MM-dd.");
-            }
-        }
-
-        if (command.equals("event") || command.startsWith("event ")) {
-            String details = command.substring(5).trim();
-            int fromIndex = details.indexOf("/from");
-            int toIndex = details.indexOf("/to", Math.max(fromIndex + 5, 0));
-            String description = fromIndex < 0 ? details : details.substring(0, fromIndex).trim();
-            if (description.isEmpty()) {
-                throw new SineException("The description of an event cannot be empty.");
-            }
-            if (fromIndex < 0 || toIndex < 0
-                    || details.substring(fromIndex + 5, toIndex).trim().isEmpty()) {
-                throw new SineException("The start time of an event cannot be empty.");
-            }
-            if (details.substring(toIndex + 3).trim().isEmpty()) {
-                throw new SineException("The end time of an event cannot be empty.");
-            }
-            String from = details.substring(fromIndex + 5, toIndex).trim();
-            String to = details.substring(toIndex + 3).trim();
-            return new Event(description, from, to);
-        }
-        return null;
-    }
 }
