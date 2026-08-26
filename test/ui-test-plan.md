@@ -10,7 +10,7 @@ Aim: Verify that todo, deadline, and event tasks can be added, listed, marked, a
 
 ```text
 todo borrow book
-deadline return book /by Sunday
+deadline return book /by 2026-08-30
 event project meeting /from Mon 2pm /to 4pm
 mark 2
 unmark 2
@@ -37,7 +37,7 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
-   [D][ ] return book (by: Sunday)
+   [D][ ] return book (by: Aug 30 2026)
  Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -47,16 +47,16 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Great work! I've marked this task as done:
-   [D][X] return book (by: Sunday)
+   [D][X] return book (by: Aug 30 2026)
 ____________________________________________________________
 ____________________________________________________________
  Roger that. I've marked this task as not done yet:
-   [D][ ] return book (by: Sunday)
+   [D][ ] return book (by: Aug 30 2026)
 ____________________________________________________________
 ____________________________________________________________
  TODO list:
  1.[T][ ] borrow book
- 2.[D][ ] return book (by: Sunday)
+ 2.[D][ ] return book (by: Aug 30 2026)
  3.[E][ ] project meeting (from: Mon 2pm to 4pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -73,6 +73,7 @@ Aim: Verify that malformed task and status commands report chatbot-specific erro
 ```text
 todo
 deadline submit report
+deadline submit report /by 2026-02-30
 event project meeting /from Monday
 mark abc
 mark 1
@@ -98,6 +99,9 @@ ____________________________________________________________
  Error :( The deadline of a deadline cannot be empty.
 ____________________________________________________________
 ____________________________________________________________
+ Error :( Please enter the deadline as yyyy-MM-dd.
+____________________________________________________________
+____________________________________________________________
  Error :( The start time of an event cannot be empty.
 ____________________________________________________________
 ____________________________________________________________
@@ -119,7 +123,7 @@ Aim: Verify that deleting a task removes the selected item and updates the task 
 
 ```text
 todo borrow book
-deadline return book /by Sunday
+deadline return book /by 2026-08-30
 event project meeting /from Mon 2pm /to 4pm
 delete 3
 list
@@ -145,7 +149,7 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
-   [D][ ] return book (by: Sunday)
+   [D][ ] return book (by: Aug 30 2026)
  Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -161,7 +165,7 @@ ____________________________________________________________
 ____________________________________________________________
  TODO list:
  1.[T][ ] borrow book
- 2.[D][ ] return book (by: Sunday)
+ 2.[D][ ] return book (by: Aug 30 2026)
 ____________________________________________________________
 ____________________________________________________________
  Bye. I'll be here if you need me :)
@@ -207,7 +211,7 @@ Aim: Verify that commands which add, mark, and delete tasks still complete norma
 
 ```text
 todo borrow book
-deadline return book /by Sunday
+deadline return book /by 2026-08-30
 mark 2
 delete 1
 bye
@@ -232,12 +236,12 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
-   [D][ ] return book (by: Sunday)
+   [D][ ] return book (by: Aug 30 2026)
  Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
  Great work! I've marked this task as done:
-   [D][X] return book (by: Sunday)
+   [D][X] return book (by: Aug 30 2026)
 ____________________________________________________________
 ____________________________________________________________
  Roger that. I've removed this task:
@@ -257,7 +261,7 @@ Aim: Verify that todo, deadline, and event tasks and their completion states are
 
 ```text
 T | 1 | read book
-D | 0 | return book | Sunday
+D | 0 | return book | 2026-08-30
 E | 1 | project meeting | Mon 2pm | 4pm
 ```
 
@@ -283,7 +287,7 @@ ____________________________________________________________
 ____________________________________________________________
  TODO list:
  1.[T][X] read book
- 2.[D][ ] return book (by: Sunday)
+ 2.[D][ ] return book (by: Aug 30 2026)
  3.[E][X] project meeting (from: Mon 2pm to 4pm)
 ____________________________________________________________
 ____________________________________________________________
@@ -293,12 +297,12 @@ ____________________________________________________________
 
 ## Test case: Recover from malformed saved data
 
-Aim: Verify that an invalid status or malformed storage record does not crash Sine and that it starts with an empty task list.
+Aim: Verify that an impossible date in a storage record does not crash Sine and that it starts with an empty task list.
 
 ### Initial data
 
 ```text
-T | maybe | read book
+D | 0 | return book | 2026-02-30
 ```
 
 ### Inputs
@@ -340,7 +344,7 @@ Aim: Verify that blank lines in the data file are ignored while valid tasks are 
 
 T | 0 | read book
 
-D | 1 | return book | Sunday
+D | 1 | return book | 2026-08-30
 
 ```
 
@@ -366,7 +370,7 @@ ____________________________________________________________
 ____________________________________________________________
  TODO list:
  1.[T][ ] read book
- 2.[D][X] return book (by: Sunday)
+ 2.[D][X] return book (by: Aug 30 2026)
 ____________________________________________________________
 ____________________________________________________________
  Bye. I'll be here if you need me :)
@@ -381,7 +385,7 @@ Aim: Verify that pipe and backslash characters in task fields are decoded withou
 
 ```text
 T | 0 | compare A \| B
-D | 1 | use C:\\notes | next \| final review
+D | 1 | use C:\\notes | 2026-09-01
 ```
 
 ### Inputs
@@ -406,7 +410,7 @@ ____________________________________________________________
 ____________________________________________________________
  TODO list:
  1.[T][ ] compare A | B
- 2.[D][X] use C:\notes (by: next | final review)
+ 2.[D][X] use C:\notes (by: Sep 01 2026)
 ____________________________________________________________
 ____________________________________________________________
  Bye. I'll be here if you need me :)

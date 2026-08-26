@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -177,7 +179,11 @@ public class Sine {
             task = new Todo(fields.get(2));
             break;
         case "D":
-            task = new Deadline(fields.get(2), fields.get(3));
+            try {
+                task = new Deadline(fields.get(2), LocalDate.parse(fields.get(3)));
+            } catch (DateTimeParseException exception) {
+                throw invalidData(lineNumber);
+            }
             break;
         case "E":
             task = new Event(fields.get(2), fields.get(3), fields.get(4));
@@ -247,7 +253,7 @@ public class Sine {
             String status = task.isDone ? "1" : "0";
             if (task instanceof Deadline deadline) {
                 lines.add("D | " + status + " | " + encodeField(task.description)
-                        + " | " + encodeField(deadline.by));
+                        + " | " + deadline.by);
             } else if (task instanceof Event event) {
                 lines.add("E | " + status + " | " + encodeField(task.description)
                         + " | " + encodeField(event.from) + " | " + encodeField(event.to));
@@ -316,7 +322,12 @@ public class Sine {
             if (byIndex < 0 || details.substring(byIndex + 3).trim().isEmpty()) {
                 throw new SineException("The deadline of a deadline cannot be empty.");
             }
-            return new Deadline(description, details.substring(byIndex + 3).trim());
+            String dateText = details.substring(byIndex + 3).trim();
+            try {
+                return new Deadline(description, LocalDate.parse(dateText));
+            } catch (DateTimeParseException exception) {
+                throw new SineException("Please enter the deadline as yyyy-MM-dd.");
+            }
         }
 
         if (command.equals("event") || command.startsWith("event ")) {
