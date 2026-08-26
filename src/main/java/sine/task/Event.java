@@ -1,3 +1,5 @@
+package sine.task;
+
 /**
  * Represents a task that takes place between a start and end time.
  */
@@ -16,6 +18,24 @@ public class Event extends Task {
         super(description);
         this.from = from;
         this.to = to;
+    }
+
+    /**
+     * Returns the event's start time.
+     *
+     * @return start time
+     */
+    public String getFrom() {
+        return from;
+    }
+
+    /**
+     * Returns the event's end time.
+     *
+     * @return end time
+     */
+    public String getTo() {
+        return to;
     }
 
     /**

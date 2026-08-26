@@ -1,3 +1,5 @@
+package sine.task;
+
 /**
  * Represents the shared description and completion state of a task.
  */
@@ -22,6 +24,24 @@ public class Task {
      */
     public String getStatusIcon() {
         return isDone ? "X" : " ";
+    }
+
+    /**
+     * Returns the task description.
+     *
+     * @return task description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Checks whether this task is completed.
+     *
+     * @return true if the task is completed
+     */
+    public boolean isDone() {
+        return isDone;
     }
 
     /**

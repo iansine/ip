@@ -1,6 +1,6 @@
 # UI Test Plan
 
-The tests run against the `Sine` main class using Java 25. Each test case is an independent console session, and output is compared exactly after normalizing line endings and the final newline.
+The tests run against the `sine.Sine` main class using Java 25. Each test case is an independent console session, and output is compared exactly after normalizing line endings and the final newline.
 
 ## Test case: Manage all task types
 

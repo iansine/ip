@@ -1,4 +1,13 @@
+package sine;
+
 import java.io.IOException;
+
+import sine.command.Command;
+import sine.exception.SineException;
+import sine.parser.Parser;
+import sine.storage.Storage;
+import sine.task.TaskList;
+import sine.ui.Ui;
 
 /**
  * Starts the Sine chatbot application.

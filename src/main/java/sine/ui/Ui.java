@@ -1,4 +1,9 @@
+package sine.ui;
+
 import java.util.Scanner;
+
+import sine.task.Task;
+import sine.task.TaskList;
 
 /**
  * Handles all console input and output for the Sine chatbot.

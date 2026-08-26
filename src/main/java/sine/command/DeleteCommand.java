@@ -1,4 +1,11 @@
+package sine.command;
+
 import java.io.IOException;
+
+import sine.storage.Storage;
+import sine.task.Task;
+import sine.task.TaskList;
+import sine.ui.Ui;
 
 /**
  * Deletes one task from the task list.

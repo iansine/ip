@@ -1,3 +1,9 @@
+package sine.command;
+
+import sine.storage.Storage;
+import sine.task.TaskList;
+import sine.ui.Ui;
+
 /**
  * Ends the chatbot session after showing the farewell message.
  */

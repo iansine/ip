@@ -78,12 +78,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", default="test/ui-test-plan.md")
     parser.add_argument("--source-dir", default="src/main/java")
-    parser.add_argument("--main-class", default="Sine")
+    parser.add_argument("--main-class", default="sine.Sine")
     parser.add_argument("--java-home", required=True)
     args = parser.parse_args()
 
     plan_path = Path(args.plan)
-    source_files = sorted(Path(args.source_dir).glob("*.java"))
+    source_files = sorted(Path(args.source_dir).rglob("*.java"))
     if not source_files:
         print(f"No Java source files found in {args.source_dir}", file=sys.stderr)
         return 2

@@ -1,4 +1,10 @@
+package sine.command;
+
 import java.io.IOException;
+
+import sine.storage.Storage;
+import sine.task.TaskList;
+import sine.ui.Ui;
 
 /**
  * Represents an instruction that can be executed by the chatbot.

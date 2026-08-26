@@ -1,5 +1,21 @@
+package sine.parser;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+
+import sine.command.AddCommand;
+import sine.command.Command;
+import sine.command.DeleteCommand;
+import sine.command.ExitCommand;
+import sine.command.ListCommand;
+import sine.command.MarkCommand;
+import sine.command.UnknownCommand;
+import sine.command.UnmarkCommand;
+import sine.exception.SineException;
+import sine.task.Deadline;
+import sine.task.Event;
+import sine.task.Task;
+import sine.task.Todo;
 
 /**
  * Interprets user input and validates command arguments.

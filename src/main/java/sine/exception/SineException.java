@@ -1,3 +1,5 @@
+package sine.exception;
+
 /**
  * Represents an input error specific to the Sine chatbot.
  */

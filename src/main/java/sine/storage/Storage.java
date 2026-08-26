@@ -1,3 +1,5 @@
+package sine.storage;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -5,6 +7,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import sine.task.Deadline;
+import sine.task.Event;
+import sine.task.Task;
+import sine.task.Todo;
 
 /**
  * Loads and saves tasks using Sine's text-file format.
@@ -53,15 +60,16 @@ public class Storage {
         Files.createDirectories(dataFile.getParent());
         List<String> lines = new ArrayList<>();
         for (Task task : tasks) {
-            String status = task.isDone ? "1" : "0";
+            String status = task.isDone() ? "1" : "0";
             if (task instanceof Deadline deadline) {
-                lines.add("D | " + status + " | " + encodeField(task.description)
-                        + " | " + deadline.by);
+                lines.add("D | " + status + " | " + encodeField(task.getDescription())
+                        + " | " + deadline.getBy());
             } else if (task instanceof Event event) {
-                lines.add("E | " + status + " | " + encodeField(task.description)
-                        + " | " + encodeField(event.from) + " | " + encodeField(event.to));
+                lines.add("E | " + status + " | " + encodeField(task.getDescription())
+                        + " | " + encodeField(event.getFrom())
+                        + " | " + encodeField(event.getTo()));
             } else {
-                lines.add("T | " + status + " | " + encodeField(task.description));
+                lines.add("T | " + status + " | " + encodeField(task.getDescription()));
             }
         }
         Files.write(dataFile, lines);
