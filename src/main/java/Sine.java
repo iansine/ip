@@ -4,13 +4,28 @@ import java.io.IOException;
  * Starts the Sine chatbot application.
  */
 public class Sine {
-    public static void main(String[] args) {
-        Ui ui = new Ui();
-        Storage storage = new Storage("data/sine.txt");
-        Parser parser = new Parser();
-        ui.showWelcome();
+    private final Ui ui;
+    private final Storage storage;
+    private final Parser parser;
+    private TaskList tasks;
 
-        TaskList tasks;
+    /**
+     * Creates a chatbot that stores its tasks at the given relative file path.
+     *
+     * @param filePath relative path to the task data file
+     */
+    public Sine(String filePath) {
+        this.ui = new Ui();
+        this.storage = new Storage(filePath);
+        this.parser = new Parser();
+        this.tasks = new TaskList();
+    }
+
+    /**
+     * Loads saved tasks and processes commands until input ends or the user exits.
+     */
+    public void run() {
+        ui.showWelcome();
         try {
             tasks = new TaskList(storage.load());
         } catch (IOException exception) {
@@ -73,4 +88,7 @@ public class Sine {
         }
     }
 
+    public static void main(String[] args) {
+        new Sine("data/sine.txt").run();
+    }
 }
