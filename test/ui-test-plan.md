@@ -290,3 +290,125 @@ ____________________________________________________________
  Bye. I'll be here if you need me :)
 ____________________________________________________________
 ```
+
+## Test case: Recover from malformed saved data
+
+Aim: Verify that an invalid status or malformed storage record does not crash Sine and that it starts with an empty task list.
+
+### Initial data
+
+```text
+T | maybe | read book
+```
+
+### Inputs
+
+```text
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ ____  _            
+/ ___|(_)_ __   ___ 
+\___ \| | '_ \ / _ \
+ ___) | | | | |  __/
+|____/|_|_| |_|\___|
+Hello! I'm Sine.
+What's up?
+____________________________________________________________
+ Warning: I couldn't load your saved tasks. Starting with an empty list.
+____________________________________________________________
+____________________________________________________________
+ TODO list:
+____________________________________________________________
+____________________________________________________________
+ Bye. I'll be here if you need me :)
+____________________________________________________________
+```
+
+## Test case: Ignore blank lines in saved data
+
+Aim: Verify that blank lines in the data file are ignored while valid tasks are still loaded.
+
+### Initial data
+
+```text
+
+T | 0 | read book
+
+D | 1 | return book | Sunday
+
+```
+
+### Inputs
+
+```text
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ ____  _            
+/ ___|(_)_ __   ___ 
+\___ \| | '_ \ / _ \
+ ___) | | | | |  __/
+|____/|_|_| |_|\___|
+Hello! I'm Sine.
+What's up?
+____________________________________________________________
+____________________________________________________________
+ TODO list:
+ 1.[T][ ] read book
+ 2.[D][X] return book (by: Sunday)
+____________________________________________________________
+____________________________________________________________
+ Bye. I'll be here if you need me :)
+____________________________________________________________
+```
+
+## Test case: Load escaped storage characters
+
+Aim: Verify that pipe and backslash characters in task fields are decoded without being mistaken for storage separators.
+
+### Initial data
+
+```text
+T | 0 | compare A \| B
+D | 1 | use C:\\notes | next \| final review
+```
+
+### Inputs
+
+```text
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ ____  _            
+/ ___|(_)_ __   ___ 
+\___ \| | '_ \ / _ \
+ ___) | | | | |  __/
+|____/|_|_| |_|\___|
+Hello! I'm Sine.
+What's up?
+____________________________________________________________
+____________________________________________________________
+ TODO list:
+ 1.[T][ ] compare A | B
+ 2.[D][X] use C:\notes (by: next | final review)
+____________________________________________________________
+____________________________________________________________
+ Bye. I'll be here if you need me :)
+____________________________________________________________
+```

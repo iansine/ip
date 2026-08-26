@@ -13,7 +13,7 @@ public class Sine {
             "____________________________________________________________";
     private static final Path DATA_FILE = Path.of("data", "sine.txt");
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         String banner = " ____  _            \n"
                 + "/ ___|(_)_ __   ___ \n"
                 + "\\___ \\| | '_ \\ / _ \\\n"
@@ -26,7 +26,15 @@ public class Sine {
         System.out.println("What's up?");
         System.out.println(SEPARATOR);
 
-        List<Task> tasks = loadTasks();
+        List<Task> tasks;
+        try {
+            tasks = loadTasks();
+        } catch (IOException exception) {
+            tasks = new ArrayList<>();
+            System.out.println(" Warning: I couldn't load your saved tasks."
+                    + " Starting with an empty list.");
+            System.out.println(SEPARATOR);
+        }
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -94,6 +102,10 @@ public class Sine {
             } catch (SineException exception) {
                 System.out.println(" Error :( " + exception.getMessage());
                 System.out.println(SEPARATOR);
+            } catch (IOException exception) {
+                System.out.println(" Error :( I couldn't save that change."
+                        + " It is available only for this session.");
+                System.out.println(SEPARATOR);
             }
         }
     }
@@ -110,28 +122,116 @@ public class Sine {
             return tasks;
         }
 
-        for (String line : Files.readAllLines(DATA_FILE)) {
-            String[] fields = line.split(" \\| ");
-            Task task;
-            switch (fields[0]) {
-            case "T":
-                task = new Todo(fields[2]);
-                break;
-            case "D":
-                task = new Deadline(fields[2], fields[3]);
-                break;
-            case "E":
-                task = new Event(fields[2], fields[3], fields[4]);
-                break;
-            default:
-                throw new IOException("Unknown task type in data file: " + fields[0]);
+        List<String> lines = Files.readAllLines(DATA_FILE);
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            if (!line.isBlank()) {
+                tasks.add(parseStoredTask(line, i + 1));
             }
-            if (fields[1].equals("1")) {
-                task.markAsDone();
-            }
-            tasks.add(task);
         }
         return tasks;
+    }
+
+    /**
+     * Converts one validated storage record into a task.
+     *
+     * @param line storage record to parse
+     * @param lineNumber one-based line number used in error messages
+     * @return task represented by the record
+     * @throws IOException if the record has an unknown type, invalid status, missing field,
+     *         or unexpected number of fields
+     */
+    private static Task parseStoredTask(String line, int lineNumber) throws IOException {
+        List<String> fields = splitStoredFields(line, lineNumber);
+        if (fields.size() < 2
+                || (!fields.get(1).equals("0") && !fields.get(1).equals("1"))) {
+            throw invalidData(lineNumber);
+        }
+
+        int expectedFieldCount;
+        switch (fields.get(0)) {
+        case "T":
+            expectedFieldCount = 3;
+            break;
+        case "D":
+            expectedFieldCount = 4;
+            break;
+        case "E":
+            expectedFieldCount = 5;
+            break;
+        default:
+            throw invalidData(lineNumber);
+        }
+        if (fields.size() != expectedFieldCount) {
+            throw invalidData(lineNumber);
+        }
+        for (int i = 2; i < fields.size(); i++) {
+            if (fields.get(i).isBlank()) {
+                throw invalidData(lineNumber);
+            }
+        }
+
+        Task task;
+        switch (fields.get(0)) {
+        case "T":
+            task = new Todo(fields.get(2));
+            break;
+        case "D":
+            task = new Deadline(fields.get(2), fields.get(3));
+            break;
+        case "E":
+            task = new Event(fields.get(2), fields.get(3), fields.get(4));
+            break;
+        default:
+            throw new AssertionError("Task type was validated above");
+        }
+        if (fields.get(1).equals("1")) {
+            task.markAsDone();
+        }
+        return task;
+    }
+
+    /**
+     * Splits a storage record while decoding escaped pipe and backslash characters.
+     *
+     * @param line storage record to split
+     * @param lineNumber one-based line number used in error messages
+     * @return decoded fields from the record
+     * @throws IOException if the record ends with an incomplete escape sequence
+     */
+    private static List<String> splitStoredFields(String line, int lineNumber) throws IOException {
+        List<String> fields = new ArrayList<>();
+        StringBuilder field = new StringBuilder();
+        for (int i = 0; i < line.length(); i++) {
+            if (line.charAt(i) == '\\') {
+                if (i + 1 >= line.length()) {
+                    throw invalidData(lineNumber);
+                }
+                char escapedCharacter = line.charAt(++i);
+                if (escapedCharacter != '\\' && escapedCharacter != '|') {
+                    throw invalidData(lineNumber);
+                }
+                field.append(escapedCharacter);
+            } else if (line.startsWith(" | ", i)) {
+                fields.add(field.toString());
+                field.setLength(0);
+                i += 2;
+            } else {
+                field.append(line.charAt(i));
+            }
+        }
+        fields.add(field.toString());
+        return fields;
+    }
+
+    /**
+     * Creates a consistent error for a malformed line in the data file.
+     *
+     * @param lineNumber one-based line number containing invalid data
+     * @return error describing the malformed record
+     */
+    private static IOException invalidData(int lineNumber) {
+        return new IOException("Invalid task data on line " + lineNumber);
     }
 
     /**
@@ -146,15 +246,26 @@ public class Sine {
         for (Task task : tasks) {
             String status = task.isDone ? "1" : "0";
             if (task instanceof Deadline deadline) {
-                lines.add("D | " + status + " | " + task.description + " | " + deadline.by);
+                lines.add("D | " + status + " | " + encodeField(task.description)
+                        + " | " + encodeField(deadline.by));
             } else if (task instanceof Event event) {
-                lines.add("E | " + status + " | " + task.description
-                        + " | " + event.from + " | " + event.to);
+                lines.add("E | " + status + " | " + encodeField(task.description)
+                        + " | " + encodeField(event.from) + " | " + encodeField(event.to));
             } else {
-                lines.add("T | " + status + " | " + task.description);
+                lines.add("T | " + status + " | " + encodeField(task.description));
             }
         }
         Files.write(DATA_FILE, lines);
+    }
+
+    /**
+     * Escapes characters that have a special meaning in the storage format.
+     *
+     * @param field task text to encode
+     * @return text safe to store as one field
+     */
+    private static String encodeField(String field) {
+        return field.replace("\\", "\\\\").replace("|", "\\|");
     }
 
     /**
