@@ -42,6 +42,29 @@ public class Parser {
     }
 
     /**
+     * Parses a command that does not modify the task list.
+     *
+     * <p>This transitional method returns {@code null} for mutating commands, which will be
+     * extracted into command classes in later increments.</p>
+     *
+     * @param command raw user command
+     * @return exit, list, or unknown command object; null for a mutating command
+     */
+    public Command parseNonMutatingCommand(String command) {
+        CommandType commandType = getCommandType(command);
+        switch (commandType) {
+        case BYE:
+            return new ExitCommand();
+        case LIST:
+            return new ListCommand();
+        case UNKNOWN:
+            return new UnknownCommand();
+        default:
+            return null;
+        }
+    }
+
+    /**
      * Converts the numeric argument of a task command to a zero-based index.
      *
      * @param command complete delete, mark, or unmark command

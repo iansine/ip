@@ -36,17 +36,16 @@ public class Sine {
             String command = ui.readCommand();
 
             try {
-                Parser.CommandType commandType = parser.getCommandType(command);
-                if (commandType == Parser.CommandType.BYE) {
-                    ui.showGoodbye();
-                    break;
-                }
-
-                if (commandType == Parser.CommandType.LIST) {
-                    ui.showTaskList(tasks);
+                Command parsedCommand = parser.parseNonMutatingCommand(command);
+                if (parsedCommand != null) {
+                    parsedCommand.execute(tasks, ui, storage);
+                    if (parsedCommand.isExit()) {
+                        break;
+                    }
                     continue;
                 }
 
+                Parser.CommandType commandType = parser.getCommandType(command);
                 if (commandType == Parser.CommandType.DELETE) {
                     int taskIndex = parser.parseTaskIndex(command, tasks.size());
                     Task removedTask = tasks.delete(taskIndex);
@@ -79,7 +78,6 @@ public class Sine {
                     continue;
                 }
 
-                ui.showUnknownCommand();
             } catch (SineException exception) {
                 ui.showCommandError(exception.getMessage());
             } catch (IOException exception) {
