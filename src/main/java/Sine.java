@@ -26,7 +26,7 @@ public class Sine {
         System.out.println("What's up?");
         System.out.println(SEPARATOR);
 
-        List<Task> tasks = new ArrayList<>();
+        List<Task> tasks = loadTasks();
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
@@ -96,6 +96,42 @@ public class Sine {
                 System.out.println(SEPARATOR);
             }
         }
+    }
+
+    /**
+     * Loads tasks from the data file, or returns an empty list if it does not exist yet.
+     *
+     * @return tasks stored during the previous run
+     * @throws IOException if the existing data file cannot be read
+     */
+    private static List<Task> loadTasks() throws IOException {
+        List<Task> tasks = new ArrayList<>();
+        if (!Files.exists(DATA_FILE)) {
+            return tasks;
+        }
+
+        for (String line : Files.readAllLines(DATA_FILE)) {
+            String[] fields = line.split(" \\| ");
+            Task task;
+            switch (fields[0]) {
+            case "T":
+                task = new Todo(fields[2]);
+                break;
+            case "D":
+                task = new Deadline(fields[2], fields[3]);
+                break;
+            case "E":
+                task = new Event(fields[2], fields[3], fields[4]);
+                break;
+            default:
+                throw new IOException("Unknown task type in data file: " + fields[0]);
+            }
+            if (fields[1].equals("1")) {
+                task.markAsDone();
+            }
+            tasks.add(task);
+        }
+        return tasks;
     }
 
     /**

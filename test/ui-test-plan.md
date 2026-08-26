@@ -248,3 +248,45 @@ ____________________________________________________________
  Bye. I'll be here if you need me :)
 ____________________________________________________________
 ```
+
+## Test case: Load tasks saved during a previous run
+
+Aim: Verify that todo, deadline, and event tasks and their completion states are loaded from disk when Sine starts.
+
+### Initial data
+
+```text
+T | 1 | read book
+D | 0 | return book | Sunday
+E | 1 | project meeting | Mon 2pm | 4pm
+```
+
+### Inputs
+
+```text
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ ____  _            
+/ ___|(_)_ __   ___ 
+\___ \| | '_ \ / _ \
+ ___) | | | | |  __/
+|____/|_|_| |_|\___|
+Hello! I'm Sine.
+What's up?
+____________________________________________________________
+____________________________________________________________
+ TODO list:
+ 1.[T][X] read book
+ 2.[D][ ] return book (by: Sunday)
+ 3.[E][X] project meeting (from: Mon 2pm to 4pm)
+____________________________________________________________
+____________________________________________________________
+ Bye. I'll be here if you need me :)
+____________________________________________________________
+```
