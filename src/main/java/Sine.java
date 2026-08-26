@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -8,8 +11,9 @@ import java.util.Scanner;
 public class Sine {
     private static final String SEPARATOR =
             "____________________________________________________________";
+    private static final Path DATA_FILE = Path.of("data", "sine.txt");
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String banner = " ____  _            \n"
                 + "/ ___|(_)_ __   ___ \n"
                 + "\\___ \\| | '_ \\ / _ \\\n"
@@ -47,6 +51,7 @@ public class Sine {
                 if (command.equals("delete") || command.startsWith("delete ")) {
                     int taskIndex = parseTaskIndex(command.substring(6), tasks.size());
                     Task removedTask = tasks.remove(taskIndex);
+                    saveTasks(tasks);
                     System.out.println(" Roger that. I've removed this task:");
                     System.out.println("   " + removedTask);
                     System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
@@ -57,6 +62,7 @@ public class Sine {
                 if (command.equals("unmark") || command.startsWith("unmark ")) {
                     int taskIndex = parseTaskIndex(command.substring(6), tasks.size());
                     tasks.get(taskIndex).markAsNotDone();
+                    saveTasks(tasks);
                     System.out.println(" Roger that. I've marked this task as not done yet:");
                     System.out.println("   " + tasks.get(taskIndex));
                     System.out.println(SEPARATOR);
@@ -66,6 +72,7 @@ public class Sine {
                 if (command.equals("mark") || command.startsWith("mark ")) {
                     int taskIndex = parseTaskIndex(command.substring(4), tasks.size());
                     tasks.get(taskIndex).markAsDone();
+                    saveTasks(tasks);
                     System.out.println(" Great work! I've marked this task as done:");
                     System.out.println("   " + tasks.get(taskIndex));
                     System.out.println(SEPARATOR);
@@ -75,6 +82,7 @@ public class Sine {
                 Task newTask = createTask(command);
                 if (newTask != null) {
                     tasks.add(newTask);
+                    saveTasks(tasks);
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("   " + newTask);
                     System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
@@ -88,6 +96,29 @@ public class Sine {
                 System.out.println(SEPARATOR);
             }
         }
+    }
+
+    /**
+     * Rewrites the data file with the current task list.
+     *
+     * @param tasks tasks to save
+     * @throws IOException if the data directory or file cannot be written
+     */
+    private static void saveTasks(List<Task> tasks) throws IOException {
+        Files.createDirectories(DATA_FILE.getParent());
+        List<String> lines = new ArrayList<>();
+        for (Task task : tasks) {
+            String status = task.isDone ? "1" : "0";
+            if (task instanceof Deadline deadline) {
+                lines.add("D | " + status + " | " + task.description + " | " + deadline.by);
+            } else if (task instanceof Event event) {
+                lines.add("E | " + status + " | " + task.description
+                        + " | " + event.from + " | " + event.to);
+            } else {
+                lines.add("T | " + status + " | " + task.description);
+            }
+        }
+        Files.write(DATA_FILE, lines);
     }
 
     /**

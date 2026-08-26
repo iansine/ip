@@ -198,3 +198,53 @@ ____________________________________________________________
  Bye. I'll be here if you need me :)
 ____________________________________________________________
 ```
+
+## Test case: Save the latest task-list state
+
+Aim: Verify that commands which add, mark, and delete tasks still complete normally while the latest task-list state is saved to disk.
+
+### Inputs
+
+```text
+todo borrow book
+deadline return book /by Sunday
+mark 2
+delete 1
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ ____  _            
+/ ___|(_)_ __   ___ 
+\___ \| | '_ \ / _ \
+ ___) | | | | |  __/
+|____/|_|_| |_|\___|
+Hello! I'm Sine.
+What's up?
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [T][ ] borrow book
+ Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [D][ ] return book (by: Sunday)
+ Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Great work! I've marked this task as done:
+   [D][X] return book (by: Sunday)
+____________________________________________________________
+____________________________________________________________
+ Roger that. I've removed this task:
+   [T][ ] borrow book
+ Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Bye. I'll be here if you need me :)
+____________________________________________________________
+```
