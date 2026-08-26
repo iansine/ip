@@ -36,20 +36,11 @@ public class Sine {
             String command = ui.readCommand();
 
             try {
-                Command parsedCommand = parser.parseCommandExceptAdd(command, tasks.size());
-                if (parsedCommand != null) {
-                    parsedCommand.execute(tasks, ui, storage);
-                    if (parsedCommand.isExit()) {
-                        break;
-                    }
-                    continue;
+                Command parsedCommand = parser.parse(command, tasks.size());
+                parsedCommand.execute(tasks, ui, storage);
+                if (parsedCommand.isExit()) {
+                    break;
                 }
-
-                Task newTask = parser.parseTask(command);
-                tasks.add(newTask);
-                storage.save(tasks.getTasks());
-                ui.showAddedTask(newTask, tasks.size());
-
             } catch (SineException exception) {
                 ui.showCommandError(exception.getMessage());
             } catch (IOException exception) {

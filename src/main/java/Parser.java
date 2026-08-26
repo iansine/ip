@@ -8,7 +8,7 @@ public class Parser {
     /**
      * Command categories understood by Sine.
      */
-    public enum CommandType {
+    private enum CommandType {
         BYE, LIST, DELETE, UNMARK, MARK, ADD_TASK, UNKNOWN
     }
 
@@ -18,7 +18,7 @@ public class Parser {
      * @param command raw user command
      * @return matching command category
      */
-    public CommandType getCommandType(String command) {
+    private CommandType getCommandType(String command) {
         if (command.equals("bye")) {
             return CommandType.BYE;
         }
@@ -42,17 +42,14 @@ public class Parser {
     }
 
     /**
-     * Parses any command except one that adds a new task.
-     *
-     * <p>This transitional method returns {@code null} only for add-task commands, which will
-     * be extracted in the next increment.</p>
+     * Parses user input into a command that is ready to execute.
      *
      * @param command raw user command
      * @param taskCount number of tasks currently stored
-     * @return parsed command object; null for an add-task command
-     * @throws SineException if a task number is invalid
+     * @return parsed command object
+     * @throws SineException if a command argument is missing or invalid
      */
-    public Command parseCommandExceptAdd(String command, int taskCount) throws SineException {
+    public Command parse(String command, int taskCount) throws SineException {
         CommandType commandType = getCommandType(command);
         switch (commandType) {
         case BYE:
@@ -65,10 +62,12 @@ public class Parser {
             return new UnmarkCommand(parseTaskIndex(command, taskCount));
         case MARK:
             return new MarkCommand(parseTaskIndex(command, taskCount));
+        case ADD_TASK:
+            return new AddCommand(parseTask(command));
         case UNKNOWN:
             return new UnknownCommand();
         default:
-            return null;
+            throw new AssertionError("Every command type is handled above");
         }
     }
 
@@ -103,7 +102,7 @@ public class Parser {
      * @return task represented by the command
      * @throws SineException if a required field is missing or invalid
      */
-    public Task parseTask(String command) throws SineException {
+    private Task parseTask(String command) throws SineException {
         if (matches(command, "todo")) {
             String description = command.substring(4).trim();
             if (description.isEmpty()) {
