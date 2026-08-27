@@ -27,6 +27,7 @@ public class StorageTest {
     @TempDir
     private Path tempDir;
 
+    /** Tests first-run loading when no data file exists. */
     @Test
     public void load_fileDoesNotExist_returnsEmptyList() throws IOException {
         Storage storage = new Storage(tempDir.resolve("missing/tasks.txt").toString());
@@ -34,6 +35,7 @@ public class StorageTest {
         assertTrue(storage.load().isEmpty());
     }
 
+    /** Tests creation of missing parent directories during saving. */
     @Test
     public void save_parentFolderDoesNotExist_createsFolderAndFile() throws IOException {
         Path dataFile = tempDir.resolve("nested/data/tasks.txt");
@@ -45,6 +47,7 @@ public class StorageTest {
         assertTrue(Files.readAllLines(dataFile).isEmpty());
     }
 
+    /** Tests a round trip containing every task type and escaped text. */
     @Test
     public void saveAndLoad_allTaskTypesAndEscapedText_preservesTaskData() throws IOException {
         Path dataFile = tempDir.resolve("tasks.txt");
@@ -72,6 +75,7 @@ public class StorageTest {
         assertTrue(loadedEvent.isDone());
     }
 
+    /** Tests that blank storage lines do not create tasks. */
     @Test
     public void load_fileContainsBlankLines_ignoresBlankLines() throws IOException {
         Path dataFile = tempDir.resolve("tasks.txt");
@@ -84,6 +88,7 @@ public class StorageTest {
         assertEquals("read book", tasks.get(0).getDescription());
     }
 
+    /** Tests rejection of malformed storage records. */
     @Test
     public void load_fileContainsMalformedRecord_throwsIOException() throws IOException {
         Path dataFile = tempDir.resolve("tasks.txt");
