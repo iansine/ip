@@ -58,6 +58,11 @@ public class Sine {
         }
     }
 
+    /**
+     * Starts Sine using the default relative data-file path.
+     *
+     * @param args command-line arguments, which are not used
+     */
     public static void main(String[] args) {
         new Sine("data/sine.txt").run();
     }

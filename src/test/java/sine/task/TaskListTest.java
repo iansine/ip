@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
  * Tests task-list mutation, indexing, and collection encapsulation.
  */
 public class TaskListTest {
+    /** Tests that the default constructor creates an empty collection. */
     @Test
     public void constructor_noInitialTasks_createsEmptyList() {
         TaskList tasks = new TaskList();
@@ -22,6 +23,7 @@ public class TaskListTest {
         assertTrue(tasks.getTasks().isEmpty());
     }
 
+    /** Tests that added tasks retain their order and identity. */
     @Test
     public void addAndGet_multipleTasks_preservesOrderAndIdentity() {
         TaskList tasks = new TaskList();
@@ -36,6 +38,7 @@ public class TaskListTest {
         assertSame(second, tasks.get(1));
     }
 
+    /** Tests that deletion returns the task and closes the index gap. */
     @Test
     public void delete_existingTask_returnsTaskAndClosesIndexGap() {
         Todo first = new Todo("first");
@@ -49,6 +52,7 @@ public class TaskListTest {
         assertSame(second, tasks.get(0));
     }
 
+    /** Tests that later source-list changes do not affect the task list. */
     @Test
     public void constructor_sourceListChanges_doesNotChangeTaskList() {
         List<Task> source = new ArrayList<>();
@@ -60,6 +64,7 @@ public class TaskListTest {
         assertEquals(1, tasks.size());
     }
 
+    /** Tests that {@code getTasks} returns an unmodifiable snapshot. */
     @Test
     public void getTasks_taskListChanges_returnsUnmodifiableSnapshot() {
         TaskList tasks = new TaskList();

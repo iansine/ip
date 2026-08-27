@@ -22,6 +22,14 @@ public class DeleteCommand extends Command {
         this.taskIndex = taskIndex;
     }
 
+    /**
+     * Deletes the selected task, saves the updated list, and shows the confirmation.
+     *
+     * @param tasks current task list
+     * @param ui console user interface
+     * @param storage task persistence service
+     * @throws IOException if the updated task list cannot be saved
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws IOException {
         Task removedTask = tasks.delete(taskIndex);

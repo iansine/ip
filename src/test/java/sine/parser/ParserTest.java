@@ -21,6 +21,7 @@ import sine.exception.SineException;
 public class ParserTest {
     private final Parser parser = new Parser();
 
+    /** Tests recognition of every supported command category. */
     @Test
     public void parse_supportedCommands_returnsMatchingCommandTypes() throws SineException {
         assertInstanceOf(ExitCommand.class, parser.parse("bye", 0));
@@ -36,6 +37,7 @@ public class ParserTest {
         assertInstanceOf(UnknownCommand.class, parser.parse("something else", 0));
     }
 
+    /** Tests rejection of missing and non-numeric task numbers. */
     @Test
     public void parse_taskNumberIsMissingOrNotNumeric_throwsHelpfulException() {
         for (String command : new String[]{"delete", "mark abc", "unmark 1.5"}) {
@@ -45,6 +47,7 @@ public class ParserTest {
         }
     }
 
+    /** Tests rejection of task numbers outside the current list. */
     @Test
     public void parse_taskNumberDoesNotExist_throwsHelpfulException() {
         for (String command : new String[]{"delete 0", "mark -1", "unmark 4"}) {
@@ -54,6 +57,7 @@ public class ParserTest {
         }
     }
 
+    /** Tests rejection of a todo with no description. */
     @Test
     public void parse_todoDescriptionIsEmpty_throwsHelpfulException() {
         SineException exception = assertThrows(SineException.class,
@@ -62,6 +66,7 @@ public class ParserTest {
         assertEquals("The description of a todo cannot be empty.", exception.getMessage());
     }
 
+    /** Tests rejection of missing and invalid deadline dates. */
     @Test
     public void parse_deadlineFieldIsMissingOrInvalid_throwsHelpfulException() {
         SineException missingDate = assertThrows(SineException.class,
@@ -73,6 +78,7 @@ public class ParserTest {
         assertEquals("Please enter the deadline as yyyy-MM-dd.", invalidDate.getMessage());
     }
 
+    /** Tests rejection of events with missing time fields. */
     @Test
     public void parse_eventFieldIsMissing_throwsHelpfulException() {
         SineException missingStart = assertThrows(SineException.class,
