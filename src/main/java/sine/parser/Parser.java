@@ -7,6 +7,7 @@ import sine.command.AddCommand;
 import sine.command.Command;
 import sine.command.DeleteCommand;
 import sine.command.ExitCommand;
+import sine.command.FindCommand;
 import sine.command.ListCommand;
 import sine.command.MarkCommand;
 import sine.command.UnknownCommand;
@@ -25,7 +26,7 @@ public class Parser {
      * Command categories understood by Sine.
      */
     private enum CommandType {
-        BYE, LIST, DELETE, UNMARK, MARK, ADD_TASK, UNKNOWN
+        BYE, LIST, FIND, DELETE, UNMARK, MARK, ADD_TASK, UNKNOWN
     }
 
     /**
@@ -40,6 +41,9 @@ public class Parser {
         }
         if (command.equals("list")) {
             return CommandType.LIST;
+        }
+        if (matches(command, "find")) {
+            return CommandType.FIND;
         }
         if (matches(command, "delete")) {
             return CommandType.DELETE;
@@ -72,6 +76,8 @@ public class Parser {
                 return new ExitCommand();
             case LIST:
                 return new ListCommand();
+            case FIND:
+                return new FindCommand(parseFindKeyword(command));
             case DELETE:
                 return new DeleteCommand(parseTaskIndex(command, taskCount));
             case UNMARK:
@@ -85,6 +91,21 @@ public class Parser {
             default:
                 throw new AssertionError("Every command type is handled above");
         }
+    }
+
+    /**
+     * Extracts and validates the keyword of a find command.
+     *
+     * @param command Complete find command.
+     * @return Non-empty keyword to search for.
+     * @throws SineException If the keyword is missing.
+     */
+    private String parseFindKeyword(String command) throws SineException {
+        String keyword = command.substring(4).trim();
+        if (keyword.isEmpty()) {
+            throw new SineException("The search keyword cannot be empty.");
+        }
+        return keyword;
     }
 
     /**
