@@ -21,7 +21,7 @@ public class Sine {
     /**
      * Creates a chatbot that stores its tasks at the given relative file path.
      *
-     * @param filePath relative path to the task data file
+     * @param filePath Relative path to the task data file.
      */
     public Sine(String filePath) {
         this.ui = new Ui();
@@ -61,7 +61,7 @@ public class Sine {
     /**
      * Starts Sine using the default relative data-file path.
      *
-     * @param args command-line arguments, which are not used
+     * @param args Command-line arguments, which Sine does not use.
      */
     public static void main(String[] args) {
         new Sine("data/sine.txt").run();

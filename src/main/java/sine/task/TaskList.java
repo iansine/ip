@@ -19,7 +19,7 @@ public class TaskList {
     /**
      * Creates a task list containing tasks loaded from storage.
      *
-     * @param tasks initial tasks
+     * @param tasks Initial tasks.
      */
     public TaskList(List<Task> tasks) {
         this.tasks = new ArrayList<>(tasks);
@@ -28,7 +28,7 @@ public class TaskList {
     /**
      * Adds a task to the end of the list.
      *
-     * @param task task to add
+     * @param task Task to add.
      */
     public void add(Task task) {
         tasks.add(task);
@@ -37,8 +37,8 @@ public class TaskList {
     /**
      * Removes and returns the task at a zero-based index.
      *
-     * @param index zero-based task index
-     * @return removed task
+     * @param index Zero-based task index.
+     * @return Removed task.
      */
     public Task delete(int index) {
         return tasks.remove(index);
@@ -47,8 +47,8 @@ public class TaskList {
     /**
      * Returns the task at a zero-based index.
      *
-     * @param index zero-based task index
-     * @return selected task
+     * @param index Zero-based task index.
+     * @return Selected task.
      */
     public Task get(int index) {
         return tasks.get(index);
@@ -57,7 +57,7 @@ public class TaskList {
     /**
      * Returns the number of tasks in the list.
      *
-     * @return task count
+     * @return Task count.
      */
     public int size() {
         return tasks.size();
@@ -66,7 +66,7 @@ public class TaskList {
     /**
      * Returns a read-only snapshot for storage or display code.
      *
-     * @return snapshot of the current tasks
+     * @return Snapshot of the current tasks.
      */
     public List<Task> getTasks() {
         return List.copyOf(tasks);

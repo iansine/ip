@@ -10,9 +10,9 @@ public class Event extends Task {
     /**
      * Creates an incomplete event task.
      *
-     * @param description description of the event
-     * @param from start date or time supplied by the user
-     * @param to end date or time supplied by the user
+     * @param description Description of the event.
+     * @param from Start date or time supplied by the user.
+     * @param to End date or time supplied by the user.
      */
     public Event(String description, String from, String to) {
         super(description);
@@ -23,7 +23,7 @@ public class Event extends Task {
     /**
      * Returns the event's start time.
      *
-     * @return start time
+     * @return Start time.
      */
     public String getFrom() {
         return from;
@@ -32,7 +32,7 @@ public class Event extends Task {
     /**
      * Returns the event's end time.
      *
-     * @return end time
+     * @return End time.
      */
     public String getTo() {
         return to;
@@ -41,7 +41,7 @@ public class Event extends Task {
     /**
      * Formats this task with its type icon, start, and end.
      *
-     * @return the formatted event task
+     * @return The formatted event task.
      */
     @Override
     public String toString() {
