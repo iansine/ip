@@ -1,5 +1,6 @@
 package sine.ui;
 
+import java.util.List;
 import java.util.Scanner;
 
 import sine.task.Task;
@@ -72,6 +73,19 @@ public class Ui {
      */
     public void showTaskList(TaskList tasks) {
         System.out.println(" TODO list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println(" " + (i + 1) + "." + tasks.get(i));
+        }
+        System.out.println(SEPARATOR);
+    }
+
+    /**
+     * Shows tasks that match a find command.
+     *
+     * @param tasks Matching tasks to display.
+     */
+    public void showFoundTasks(List<Task> tasks) {
+        System.out.println(" Here is what I found:");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println(" " + (i + 1) + "." + tasks.get(i));
         }

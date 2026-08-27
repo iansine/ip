@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import sine.command.AddCommand;
 import sine.command.DeleteCommand;
 import sine.command.ExitCommand;
+import sine.command.FindCommand;
 import sine.command.ListCommand;
 import sine.command.MarkCommand;
 import sine.command.UnknownCommand;
@@ -25,6 +26,7 @@ public class ParserTest {
     public void parse_supportedCommands_returnsMatchingCommandTypes() throws SineException {
         assertInstanceOf(ExitCommand.class, parser.parse("bye", 0));
         assertInstanceOf(ListCommand.class, parser.parse("list", 0));
+        assertInstanceOf(FindCommand.class, parser.parse("find book", 0));
         assertInstanceOf(DeleteCommand.class, parser.parse("delete 1", 1));
         assertInstanceOf(MarkCommand.class, parser.parse("mark 1", 1));
         assertInstanceOf(UnmarkCommand.class, parser.parse("unmark 1", 1));
@@ -34,6 +36,14 @@ public class ParserTest {
         assertInstanceOf(AddCommand.class,
                 parser.parse("event meeting /from 2pm /to 4pm", 0));
         assertInstanceOf(UnknownCommand.class, parser.parse("something else", 0));
+    }
+
+    @Test
+    public void parse_findKeywordIsMissing_throwsHelpfulException() {
+        SineException exception = assertThrows(SineException.class,
+                () -> parser.parse("find", 0));
+
+        assertEquals("The search keyword cannot be empty.", exception.getMessage());
     }
 
     @Test
