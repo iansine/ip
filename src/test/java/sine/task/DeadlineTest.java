@@ -7,9 +7,17 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests the user-facing string representation of deadline tasks.
+ * Tests deadline-specific date access and user-facing formatting.
  */
 public class DeadlineTest {
+    @Test
+    public void getBy_deadlineHasDate_returnsSameDate() {
+        LocalDate date = LocalDate.of(2026, 8, 30);
+        Deadline deadline = new Deadline("return book", date);
+
+        assertEquals(date, deadline.getBy());
+    }
+
     @Test
     public void toString_incompleteDeadline_formatsStatusDescriptionAndDate() {
         Deadline deadline = new Deadline("return book", LocalDate.of(2026, 8, 30));
