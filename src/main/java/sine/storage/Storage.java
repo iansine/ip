@@ -22,7 +22,7 @@ public class Storage {
     /**
      * Creates storage that uses the given OS-independent relative file path.
      *
-     * @param filePath path to the task data file
+     * @param filePath Path to the task data file.
      */
     public Storage(String filePath) {
         this.dataFile = Path.of(filePath);
@@ -31,8 +31,8 @@ public class Storage {
     /**
      * Loads tasks from the data file, or returns an empty list if it does not exist yet.
      *
-     * @return tasks stored during the previous run
-     * @throws IOException if the existing data file cannot be read or contains invalid data
+     * @return Tasks stored during the previous run.
+     * @throws IOException If the existing data file cannot be read or contains invalid data.
      */
     public List<Task> load() throws IOException {
         List<Task> tasks = new ArrayList<>();
@@ -53,8 +53,8 @@ public class Storage {
     /**
      * Rewrites the data file with the current task list.
      *
-     * @param tasks tasks to save
-     * @throws IOException if the data directory or file cannot be written
+     * @param tasks Tasks to save.
+     * @throws IOException If the data directory or file cannot be written.
      */
     public void save(List<Task> tasks) throws IOException {
         Files.createDirectories(dataFile.getParent());
@@ -78,10 +78,10 @@ public class Storage {
     /**
      * Converts one validated storage record into a task.
      *
-     * @param line storage record to parse
-     * @param lineNumber one-based line number used in error messages
-     * @return task represented by the record
-     * @throws IOException if the record contains invalid task data
+     * @param line Storage record to parse.
+     * @param lineNumber One-based line number used in error messages.
+     * @return Task represented by the record.
+     * @throws IOException If the record contains invalid task data.
      */
     private Task parseStoredTask(String line, int lineNumber) throws IOException {
         List<String> fields = splitStoredFields(line, lineNumber);
@@ -92,17 +92,17 @@ public class Storage {
 
         int expectedFieldCount;
         switch (fields.get(0)) {
-        case "T":
-            expectedFieldCount = 3;
-            break;
-        case "D":
-            expectedFieldCount = 4;
-            break;
-        case "E":
-            expectedFieldCount = 5;
-            break;
-        default:
-            throw invalidData(lineNumber);
+            case "T":
+                expectedFieldCount = 3;
+                break;
+            case "D":
+                expectedFieldCount = 4;
+                break;
+            case "E":
+                expectedFieldCount = 5;
+                break;
+            default:
+                throw invalidData(lineNumber);
         }
         if (fields.size() != expectedFieldCount) {
             throw invalidData(lineNumber);
@@ -115,21 +115,21 @@ public class Storage {
 
         Task task;
         switch (fields.get(0)) {
-        case "T":
-            task = new Todo(fields.get(2));
-            break;
-        case "D":
-            try {
-                task = new Deadline(fields.get(2), LocalDate.parse(fields.get(3)));
-            } catch (DateTimeParseException exception) {
-                throw invalidData(lineNumber);
-            }
-            break;
-        case "E":
-            task = new Event(fields.get(2), fields.get(3), fields.get(4));
-            break;
-        default:
-            throw new AssertionError("Task type was validated above");
+            case "T":
+                task = new Todo(fields.get(2));
+                break;
+            case "D":
+                try {
+                    task = new Deadline(fields.get(2), LocalDate.parse(fields.get(3)));
+                } catch (DateTimeParseException exception) {
+                    throw invalidData(lineNumber);
+                }
+                break;
+            case "E":
+                task = new Event(fields.get(2), fields.get(3), fields.get(4));
+                break;
+            default:
+                throw new AssertionError("Task type was validated above");
         }
         if (fields.get(1).equals("1")) {
             task.markAsDone();
@@ -140,10 +140,10 @@ public class Storage {
     /**
      * Splits a storage record while decoding escaped pipe and backslash characters.
      *
-     * @param line storage record to split
-     * @param lineNumber one-based line number used in error messages
-     * @return decoded fields from the record
-     * @throws IOException if the record contains an invalid escape sequence
+     * @param line Storage record to split.
+     * @param lineNumber One-based line number used in error messages.
+     * @return Decoded fields from the record.
+     * @throws IOException If the record contains an invalid escape sequence.
      */
     private List<String> splitStoredFields(String line, int lineNumber) throws IOException {
         List<String> fields = new ArrayList<>();
@@ -173,8 +173,8 @@ public class Storage {
     /**
      * Creates a consistent error for a malformed line in the data file.
      *
-     * @param lineNumber one-based line number containing invalid data
-     * @return error describing the malformed record
+     * @param lineNumber One-based line number containing invalid data.
+     * @return Error describing the malformed record.
      */
     private IOException invalidData(int lineNumber) {
         return new IOException("Invalid task data on line " + lineNumber);
@@ -183,8 +183,8 @@ public class Storage {
     /**
      * Escapes characters that have a special meaning in the storage format.
      *
-     * @param field task text to encode
-     * @return text safe to store as one field
+     * @param field Task text to encode.
+     * @return Text safe to store as one field.
      */
     private String encodeField(String field) {
         return field.replace("\\", "\\\\").replace("|", "\\|");

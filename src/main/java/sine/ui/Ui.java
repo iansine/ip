@@ -40,7 +40,7 @@ public class Ui {
     /**
      * Checks whether another command is available from the input stream.
      *
-     * @return true if another command can be read
+     * @return True if another command can be read.
      */
     public boolean hasNextCommand() {
         return scanner.hasNextLine();
@@ -49,7 +49,7 @@ public class Ui {
     /**
      * Reads the next command and starts its response section.
      *
-     * @return command entered by the user
+     * @return Command entered by the user.
      */
     public String readCommand() {
         String command = scanner.nextLine();
@@ -68,7 +68,7 @@ public class Ui {
     /**
      * Shows every task with its one-based task number.
      *
-     * @param tasks tasks to display
+     * @param tasks Tasks to display.
      */
     public void showTaskList(TaskList tasks) {
         System.out.println(" TODO list:");
@@ -81,8 +81,8 @@ public class Ui {
     /**
      * Shows confirmation that a task was removed.
      *
-     * @param task removed task
-     * @param taskCount number of remaining tasks
+     * @param task Removed task.
+     * @param taskCount Number of remaining tasks.
      */
     public void showDeletedTask(Task task, int taskCount) {
         System.out.println(" Roger that. I've removed this task:");
@@ -94,7 +94,7 @@ public class Ui {
     /**
      * Shows confirmation that a task was marked as not done.
      *
-     * @param task updated task
+     * @param task Updated task.
      */
     public void showUnmarkedTask(Task task) {
         System.out.println(" Roger that. I've marked this task as not done yet:");
@@ -105,7 +105,7 @@ public class Ui {
     /**
      * Shows confirmation that a task was marked as done.
      *
-     * @param task updated task
+     * @param task Updated task.
      */
     public void showMarkedTask(Task task) {
         System.out.println(" Great work! I've marked this task as done:");
@@ -116,8 +116,8 @@ public class Ui {
     /**
      * Shows confirmation that a task was added.
      *
-     * @param task added task
-     * @param taskCount number of current tasks
+     * @param task Added task.
+     * @param taskCount Number of current tasks.
      */
     public void showAddedTask(Task task, int taskCount) {
         System.out.println(" Got it. I've added this task:");
@@ -137,7 +137,7 @@ public class Ui {
     /**
      * Shows a user-command validation error.
      *
-     * @param message explanation of the invalid command
+     * @param message Explanation of the invalid command.
      */
     public void showCommandError(String message) {
         System.out.println(" Error :( " + message);

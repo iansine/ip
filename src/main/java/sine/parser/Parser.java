@@ -31,8 +31,8 @@ public class Parser {
     /**
      * Identifies the operation requested by a command.
      *
-     * @param command raw user command
-     * @return matching command category
+     * @param command Raw user command.
+     * @return Matching command category.
      */
     private CommandType getCommandType(String command) {
         if (command.equals("bye")) {
@@ -60,40 +60,40 @@ public class Parser {
     /**
      * Parses user input into a command that is ready to execute.
      *
-     * @param command raw user command
-     * @param taskCount number of tasks currently stored
-     * @return parsed command object
-     * @throws SineException if a command argument is missing or invalid
+     * @param command Raw user command.
+     * @param taskCount Number of tasks currently stored.
+     * @return Parsed command object.
+     * @throws SineException If a command argument is missing or invalid.
      */
     public Command parse(String command, int taskCount) throws SineException {
         CommandType commandType = getCommandType(command);
         switch (commandType) {
-        case BYE:
-            return new ExitCommand();
-        case LIST:
-            return new ListCommand();
-        case DELETE:
-            return new DeleteCommand(parseTaskIndex(command, taskCount));
-        case UNMARK:
-            return new UnmarkCommand(parseTaskIndex(command, taskCount));
-        case MARK:
-            return new MarkCommand(parseTaskIndex(command, taskCount));
-        case ADD_TASK:
-            return new AddCommand(parseTask(command));
-        case UNKNOWN:
-            return new UnknownCommand();
-        default:
-            throw new AssertionError("Every command type is handled above");
+            case BYE:
+                return new ExitCommand();
+            case LIST:
+                return new ListCommand();
+            case DELETE:
+                return new DeleteCommand(parseTaskIndex(command, taskCount));
+            case UNMARK:
+                return new UnmarkCommand(parseTaskIndex(command, taskCount));
+            case MARK:
+                return new MarkCommand(parseTaskIndex(command, taskCount));
+            case ADD_TASK:
+                return new AddCommand(parseTask(command));
+            case UNKNOWN:
+                return new UnknownCommand();
+            default:
+                throw new AssertionError("Every command type is handled above");
         }
     }
 
     /**
      * Converts the numeric argument of a task command to a zero-based index.
      *
-     * @param command complete delete, mark, or unmark command
-     * @param taskCount number of tasks currently stored
-     * @return zero-based index of the selected task
-     * @throws SineException if the argument is not a valid stored task number
+     * @param command Complete delete, mark, or unmark command.
+     * @param taskCount Number of tasks currently stored.
+     * @return Zero-based index of the selected task.
+     * @throws SineException If the argument is not a valid stored task number.
      */
     private int parseTaskIndex(String command, int taskCount) throws SineException {
         int firstSpace = command.indexOf(' ');
@@ -114,9 +114,9 @@ public class Parser {
     /**
      * Creates the task described by an add-task command.
      *
-     * @param command todo, deadline, or event command entered by the user
-     * @return task represented by the command
-     * @throws SineException if a required field is missing or invalid
+     * @param command Todo, deadline, or event command entered by the user.
+     * @return Task represented by the command.
+     * @throws SineException If a required field is missing or invalid.
      */
     private Task parseTask(String command) throws SineException {
         if (matches(command, "todo")) {
@@ -167,9 +167,9 @@ public class Parser {
     /**
      * Checks whether input is a command word, optionally followed by arguments.
      *
-     * @param input raw user input
-     * @param commandWord command word to match
-     * @return true if the input starts with the complete command word
+     * @param input Raw user input.
+     * @param commandWord Command word to match.
+     * @return True if the input starts with the complete command word.
      */
     private boolean matches(String input, String commandWord) {
         return input.equals(commandWord) || input.startsWith(commandWord + " ");

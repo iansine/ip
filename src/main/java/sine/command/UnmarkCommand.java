@@ -16,7 +16,7 @@ public class UnmarkCommand extends Command {
     /**
      * Creates a command that unmarks the task at a zero-based index.
      *
-     * @param taskIndex zero-based index of the task to unmark
+     * @param taskIndex Zero-based index of the task to unmark.
      */
     public UnmarkCommand(int taskIndex) {
         this.taskIndex = taskIndex;

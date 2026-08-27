@@ -13,17 +13,17 @@ public abstract class Command {
     /**
      * Executes this command using the application's shared components.
      *
-     * @param tasks current task list
-     * @param ui console user interface
-     * @param storage task persistence service
-     * @throws IOException if the command cannot save task changes
+     * @param tasks Current task list.
+     * @param ui Console user interface.
+     * @param storage Task persistence service.
+     * @throws IOException If the command cannot save task changes.
      */
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws IOException;
 
     /**
      * Indicates whether executing this command should end the application.
      *
-     * @return true only for an exit command
+     * @return True only for an exit command.
      */
     public boolean isExit() {
         return false;
