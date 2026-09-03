@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import sine.Sine;
+import sine.ui.Messages;
 
 /**
  * Controls Sine's main chat window.
@@ -46,7 +47,8 @@ public class MainWindow {
     public void setSine(Sine sine) {
         this.sine = sine;
         dialogContainer.getChildren().add(
-                DialogBox.getSineDialog("Hello! I'm Sine.\nWhat's up?", SINE_IMAGE));
+                DialogBox.getSineDialog(
+                        "Hello! I'm Sine.\n" + Messages.COMMAND_HELP, SINE_IMAGE));
     }
 
     /**

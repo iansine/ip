@@ -52,7 +52,7 @@ public class Ui {
         showSeparator();
         output.println(BANNER);
         output.println("Hello! I'm Sine.");
-        output.println("What's up?");
+        output.println(Messages.COMMAND_HELP);
         showSeparator();
     }
 
