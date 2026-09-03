@@ -28,7 +28,16 @@ ____________________________________________________________
  ___) | | | | |  __/
 |____/|_|_| |_|\___|
 Hello! I'm Sine.
-What's up?
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - bye
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
@@ -90,7 +99,16 @@ ____________________________________________________________
  ___) | | | | |  __/
 |____/|_|_| |_|\___|
 Hello! I'm Sine.
-What's up?
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - bye
 ____________________________________________________________
 ____________________________________________________________
  Error :( The description of a todo cannot be empty.
@@ -140,7 +158,16 @@ ____________________________________________________________
  ___) | | | | |  __/
 |____/|_|_| |_|\___|
 Hello! I'm Sine.
-What's up?
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - bye
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
@@ -193,7 +220,16 @@ ____________________________________________________________
  ___) | | | | |  __/
 |____/|_|_| |_|\___|
 Hello! I'm Sine.
-What's up?
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - bye
 ____________________________________________________________
 ____________________________________________________________
  Must have been the wind
@@ -227,7 +263,16 @@ ____________________________________________________________
  ___) | | | | |  __/
 |____/|_|_| |_|\___|
 Hello! I'm Sine.
-What's up?
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - bye
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
@@ -282,7 +327,16 @@ ____________________________________________________________
  ___) | | | | |  __/
 |____/|_|_| |_|\___|
 Hello! I'm Sine.
-What's up?
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - bye
 ____________________________________________________________
 ____________________________________________________________
  TODO list:
@@ -322,7 +376,16 @@ ____________________________________________________________
  ___) | | | | |  __/
 |____/|_|_| |_|\___|
 Hello! I'm Sine.
-What's up?
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - bye
 ____________________________________________________________
  Warning: I couldn't load your saved tasks. Starting with an empty list.
 ____________________________________________________________
@@ -365,7 +428,16 @@ ____________________________________________________________
  ___) | | | | |  __/
 |____/|_|_| |_|\___|
 Hello! I'm Sine.
-What's up?
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - bye
 ____________________________________________________________
 ____________________________________________________________
  TODO list:
@@ -405,7 +477,16 @@ ____________________________________________________________
  ___) | | | | |  __/
 |____/|_|_| |_|\___|
 Hello! I'm Sine.
-What's up?
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - bye
 ____________________________________________________________
 ____________________________________________________________
  TODO list:
@@ -445,7 +526,16 @@ ____________________________________________________________
  ___) | | | | |  __/
 |____/|_|_| |_|\___|
 Hello! I'm Sine.
-What's up?
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - bye
 ____________________________________________________________
 ____________________________________________________________
  Got it. I've added this task:
