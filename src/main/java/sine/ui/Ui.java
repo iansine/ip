@@ -1,5 +1,6 @@
 package sine.ui;
 
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,23 +20,40 @@ public class Ui {
             + "|____/|_|_| |_|\\___|";
 
     private final Scanner scanner;
+    private final PrintStream output;
+    private final boolean isSeparatorShown;
 
     /**
      * Creates a UI that reads commands from standard input.
      */
     public Ui() {
+        this(System.out, true);
+    }
+
+    /**
+     * Creates a UI that writes response text without console separators.
+     *
+     * @param output Destination for response text.
+     */
+    public Ui(PrintStream output) {
+        this(output, false);
+    }
+
+    private Ui(PrintStream output, boolean isSeparatorShown) {
         this.scanner = new Scanner(System.in);
+        this.output = output;
+        this.isSeparatorShown = isSeparatorShown;
     }
 
     /**
      * Shows the chatbot banner and greeting.
      */
     public void showWelcome() {
-        System.out.println(SEPARATOR);
-        System.out.println(BANNER);
-        System.out.println("Hello! I'm Sine.");
-        System.out.println("What's up?");
-        System.out.println(SEPARATOR);
+        showSeparator();
+        output.println(BANNER);
+        output.println("Hello! I'm Sine.");
+        output.println("What's up?");
+        showSeparator();
     }
 
     /**
@@ -54,7 +72,7 @@ public class Ui {
      */
     public String readCommand() {
         String command = scanner.nextLine();
-        System.out.println(SEPARATOR);
+        showSeparator();
         return command;
     }
 
@@ -62,8 +80,8 @@ public class Ui {
      * Shows the normal farewell.
      */
     public void showGoodbye() {
-        System.out.println(" Bye. I'll be here if you need me :)");
-        System.out.println(SEPARATOR);
+        output.println(" Bye. I'll be here if you need me :)");
+        showSeparator();
     }
 
     /**
@@ -72,11 +90,11 @@ public class Ui {
      * @param tasks Tasks to display.
      */
     public void showTaskList(TaskList tasks) {
-        System.out.println(" TODO list:");
+        output.println(" TODO list:");
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(" " + (i + 1) + "." + tasks.get(i));
+            output.println(" " + (i + 1) + "." + tasks.get(i));
         }
-        System.out.println(SEPARATOR);
+        showSeparator();
     }
 
     /**
@@ -85,11 +103,11 @@ public class Ui {
      * @param tasks Matching tasks to display.
      */
     public void showFoundTasks(List<Task> tasks) {
-        System.out.println(" Here is what I found:");
+        output.println(" Here is what I found:");
         for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(" " + (i + 1) + "." + tasks.get(i));
+            output.println(" " + (i + 1) + "." + tasks.get(i));
         }
-        System.out.println(SEPARATOR);
+        showSeparator();
     }
 
     /**
@@ -99,10 +117,10 @@ public class Ui {
      * @param taskCount Number of remaining tasks.
      */
     public void showDeletedTask(Task task, int taskCount) {
-        System.out.println(" Roger that. I've removed this task:");
-        System.out.println("   " + task);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
-        System.out.println(SEPARATOR);
+        output.println(" Roger that. I've removed this task:");
+        output.println("   " + task);
+        output.println(" Now you have " + taskCount + " tasks in the list.");
+        showSeparator();
     }
 
     /**
@@ -111,9 +129,9 @@ public class Ui {
      * @param task Updated task.
      */
     public void showUnmarkedTask(Task task) {
-        System.out.println(" Roger that. I've marked this task as not done yet:");
-        System.out.println("   " + task);
-        System.out.println(SEPARATOR);
+        output.println(" Roger that. I've marked this task as not done yet:");
+        output.println("   " + task);
+        showSeparator();
     }
 
     /**
@@ -122,9 +140,9 @@ public class Ui {
      * @param task Updated task.
      */
     public void showMarkedTask(Task task) {
-        System.out.println(" Great work! I've marked this task as done:");
-        System.out.println("   " + task);
-        System.out.println(SEPARATOR);
+        output.println(" Great work! I've marked this task as done:");
+        output.println("   " + task);
+        showSeparator();
     }
 
     /**
@@ -134,18 +152,18 @@ public class Ui {
      * @param taskCount Number of current tasks.
      */
     public void showAddedTask(Task task, int taskCount) {
-        System.out.println(" Got it. I've added this task:");
-        System.out.println("   " + task);
-        System.out.println(" Now you have " + taskCount + " tasks in the list.");
-        System.out.println(SEPARATOR);
+        output.println(" Got it. I've added this task:");
+        output.println("   " + task);
+        output.println(" Now you have " + taskCount + " tasks in the list.");
+        showSeparator();
     }
 
     /**
      * Shows the response for an unknown command.
      */
     public void showUnknownCommand() {
-        System.out.println(" Must have been the wind");
-        System.out.println(SEPARATOR);
+        output.println(" Must have been the wind");
+        showSeparator();
     }
 
     /**
@@ -154,25 +172,31 @@ public class Ui {
      * @param message Explanation of the invalid command.
      */
     public void showCommandError(String message) {
-        System.out.println(" Error :( " + message);
-        System.out.println(SEPARATOR);
+        output.println(" Error :( " + message);
+        showSeparator();
     }
 
     /**
      * Warns that saved tasks could not be loaded.
      */
     public void showLoadingError() {
-        System.out.println(" Warning: I couldn't load your saved tasks."
+        output.println(" Warning: I couldn't load your saved tasks."
                 + " Starting with an empty list.");
-        System.out.println(SEPARATOR);
+        showSeparator();
     }
 
     /**
      * Warns that a task-list change could not be saved.
      */
     public void showSavingError() {
-        System.out.println(" Error :( I couldn't save that change."
+        output.println(" Error :( I couldn't save that change."
                 + " It is available only for this session.");
-        System.out.println(SEPARATOR);
+        showSeparator();
+    }
+
+    private void showSeparator() {
+        if (isSeparatorShown) {
+            output.println(SEPARATOR);
+        }
     }
 }
