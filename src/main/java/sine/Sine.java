@@ -67,6 +67,9 @@ public class Sine {
         return responseBuffer.toString(StandardCharsets.UTF_8).strip();
     }
 
+    /**
+     * Loads tasks once, falling back to an empty list if saved data cannot be read.
+     */
     private void initializeTasks(Ui activeUi) {
         if (isInitialized) {
             return;
@@ -81,9 +84,21 @@ public class Sine {
         isInitialized = true;
     }
 
+    /**
+     * Executes a command against initialized tasks and reports recoverable errors to the calling UI.
+     */
     private boolean executeCommand(String input, Ui activeUi) {
+        // Both console and GUI entry points must load saved tasks before processing commands.
+        assert isInitialized : "Tasks must be initialized before executing a command";
+        // Successful loading and loading-error recovery must both leave a usable task list.
+        assert tasks != null : "Initialized tasks must not be null";
+        // Internal callers must provide the UI that receives this command's response.
+        assert activeUi != null : "Command execution requires a response UI";
+
         try {
             Command parsedCommand = parser.parse(input, tasks.size());
+            // Parsing must either produce a command or throw a recoverable SineException.
+            assert parsedCommand != null : "Successful parsing must return a command";
             parsedCommand.execute(tasks, activeUi, storage);
             return parsedCommand.isExit();
         } catch (SineException exception) {
