@@ -76,7 +76,7 @@ public class Storage {
     }
 
     /**
-     * Converts one validated storage record into a task.
+     * Validates and converts one storage record into a task.
      *
      * @param line Storage record to parse.
      * @param lineNumber One-based line number used in error messages.
@@ -85,25 +85,24 @@ public class Storage {
      */
     private Task parseStoredTask(String line, int lineNumber) throws IOException {
         List<String> fields = splitStoredFields(line, lineNumber);
+        validateStoredFields(fields, lineNumber);
+        Task task = createStoredTask(fields, lineNumber);
+        if (fields.get(1).equals("1")) {
+            task.markAsDone();
+        }
+        return task;
+    }
+
+    /**
+     * Validates the status, field count, and required text before constructing a task.
+     */
+    private void validateStoredFields(List<String> fields, int lineNumber) throws IOException {
         if (fields.size() < 2
                 || (!fields.get(1).equals("0") && !fields.get(1).equals("1"))) {
             throw invalidData(lineNumber);
         }
 
-        int expectedFieldCount;
-        switch (fields.get(0)) {
-            case "T":
-                expectedFieldCount = 3;
-                break;
-            case "D":
-                expectedFieldCount = 4;
-                break;
-            case "E":
-                expectedFieldCount = 5;
-                break;
-            default:
-                throw invalidData(lineNumber);
-        }
+        int expectedFieldCount = getExpectedFieldCount(fields.get(0), lineNumber);
         if (fields.size() != expectedFieldCount) {
             throw invalidData(lineNumber);
         }
@@ -112,29 +111,42 @@ public class Storage {
                 throw invalidData(lineNumber);
             }
         }
+    }
 
-        Task task;
+    /**
+     * Returns the number of fields required by a supported storage task type.
+     */
+    private int getExpectedFieldCount(String taskType, int lineNumber) throws IOException {
+        switch (taskType) {
+            case "T":
+                return 3;
+            case "D":
+                return 4;
+            case "E":
+                return 5;
+            default:
+                throw invalidData(lineNumber);
+        }
+    }
+
+    /**
+     * Constructs a task from validated fields, rejecting invalid deadline dates.
+     */
+    private Task createStoredTask(List<String> fields, int lineNumber) throws IOException {
         switch (fields.get(0)) {
             case "T":
-                task = new Todo(fields.get(2));
-                break;
+                return new Todo(fields.get(2));
             case "D":
                 try {
-                    task = new Deadline(fields.get(2), LocalDate.parse(fields.get(3)));
+                    return new Deadline(fields.get(2), LocalDate.parse(fields.get(3)));
                 } catch (DateTimeParseException exception) {
                     throw invalidData(lineNumber);
                 }
-                break;
             case "E":
-                task = new Event(fields.get(2), fields.get(3), fields.get(4));
-                break;
+                return new Event(fields.get(2), fields.get(3), fields.get(4));
             default:
                 throw new AssertionError("Task type was validated above");
         }
-        if (fields.get(1).equals("1")) {
-            task.markAsDone();
-        }
-        return task;
     }
 
     /**
