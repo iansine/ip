@@ -10,6 +10,7 @@ import sine.command.ExitCommand;
 import sine.command.FindCommand;
 import sine.command.ListCommand;
 import sine.command.MarkCommand;
+import sine.command.UndoCommand;
 import sine.command.UnknownCommand;
 import sine.command.UnmarkCommand;
 import sine.exception.SineException;
@@ -26,7 +27,7 @@ public class Parser {
      * Command categories understood by Sine.
      */
     private enum CommandType {
-        BYE, LIST, FIND, DELETE, UNMARK, MARK, ADD_TASK, UNKNOWN
+        UNDO, BYE, LIST, FIND, DELETE, UNMARK, MARK, ADD_TASK, UNKNOWN
     }
 
     /**
@@ -35,7 +36,14 @@ public class Parser {
      * @param command Raw user command.
      * @return Matching command category.
      */
-    private CommandType getCommandType(String command) {
+    private CommandType getCommandType(String command) throws SineException {
+        if (command.equals("undo") || command.equals("UNDO")) {
+            return CommandType.UNDO;
+        }
+        String firstWord = command.strip().split("\\s+", 2)[0];
+        if (firstWord.equalsIgnoreCase("undo")) {
+            throw new SineException("Usage: undo or UNDO");
+        }
         if (command.equals("bye")) {
             return CommandType.BYE;
         }
@@ -72,6 +80,8 @@ public class Parser {
     public Command parse(String command, int taskCount) throws SineException {
         CommandType commandType = getCommandType(command);
         switch (commandType) {
+            case UNDO:
+                return new UndoCommand();
             case BYE:
                 return new ExitCommand();
             case LIST:

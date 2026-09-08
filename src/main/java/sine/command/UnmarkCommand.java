@@ -33,7 +33,7 @@ public class UnmarkCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws IOException {
         Task task = tasks.get(taskIndex);
-        task.markAsNotDone();
+        tasks.setDone(taskIndex, false);
         storage.save(tasks.getTasks());
         ui.showUnmarkedTask(task);
     }

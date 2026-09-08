@@ -12,6 +12,7 @@ import sine.command.ExitCommand;
 import sine.command.FindCommand;
 import sine.command.ListCommand;
 import sine.command.MarkCommand;
+import sine.command.UndoCommand;
 import sine.command.UnknownCommand;
 import sine.command.UnmarkCommand;
 import sine.exception.SineException;
@@ -98,5 +99,19 @@ public class ParserTest {
 
         assertEquals("The start time of an event cannot be empty.", missingStart.getMessage());
         assertEquals("The start time of an event cannot be empty.", missingEnd.getMessage());
+    }
+
+    /** Tests exact spellings, malformed undo words, and unrelated unknown words. */
+    @Test
+    public void parse_undoSyntax_acceptsOnlyExactSpellings() throws SineException {
+        assertInstanceOf(UndoCommand.class, parser.parse("undo", 0));
+        assertInstanceOf(UndoCommand.class, parser.parse("UNDO", 0));
+        for (String input : new String[]{"Undo", "uNdO", "undo 2", "UNDO now", " undo ", "undo\t2"}) {
+            SineException exception = assertThrows(SineException.class, () -> parser.parse(input, 0));
+            assertEquals("Usage: undo or UNDO", exception.getMessage());
+        }
+        assertInstanceOf(UnknownCommand.class, parser.parse("undoable", 0));
+        assertInstanceOf(UnknownCommand.class, parser.parse("undo!", 0));
+        assertInstanceOf(UnknownCommand.class, parser.parse("redo", 0));
     }
 }

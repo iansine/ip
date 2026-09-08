@@ -33,7 +33,7 @@ public class MarkCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws IOException {
         Task task = tasks.get(taskIndex);
-        task.markAsDone();
+        tasks.setDone(taskIndex, true);
         storage.save(tasks.getTasks());
         ui.showMarkedTask(task);
     }

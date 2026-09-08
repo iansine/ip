@@ -194,6 +194,17 @@ public class Ui {
         showSeparator();
     }
 
+    /**
+     * Shows which task change was reversed in memory.
+     *
+     * @param details Action description and affected task.
+     */
+    public void showUndo(String details) {
+        output.println("Understood. I undid the last task change.");
+        output.println(details);
+        showSeparator();
+    }
+
     private void showSeparator() {
         if (isSeparatorShown) {
             output.println(SEPARATOR);
