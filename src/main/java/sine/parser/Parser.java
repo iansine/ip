@@ -141,31 +141,53 @@ public class Parser {
      */
     private Task parseTask(String command) throws SineException {
         if (matches(command, "todo")) {
-            String description = command.substring(4).trim();
-            if (description.isEmpty()) {
-                throw new SineException("The description of a todo cannot be empty.");
-            }
-            return new Todo(description);
+            return parseTodo(command);
         }
-
         if (matches(command, "deadline")) {
-            String details = command.substring(8).trim();
-            int byIndex = details.indexOf("/by");
-            String description = byIndex < 0 ? details : details.substring(0, byIndex).trim();
-            if (description.isEmpty()) {
-                throw new SineException("The description of a deadline cannot be empty.");
-            }
-            if (byIndex < 0 || details.substring(byIndex + 3).trim().isEmpty()) {
-                throw new SineException("The deadline of a deadline cannot be empty.");
-            }
-            String dateText = details.substring(byIndex + 3).trim();
-            try {
-                return new Deadline(description, LocalDate.parse(dateText));
-            } catch (DateTimeParseException exception) {
-                throw new SineException("Please enter the deadline as yyyy-MM-dd.");
-            }
+            return parseDeadline(command);
         }
+        if (matches(command, "event")) {
+            return parseEvent(command);
+        }
+        throw new AssertionError("Only add-task commands reach task parsing");
+    }
 
+    /**
+     * Parses a todo command and rejects an empty description.
+     */
+    private Todo parseTodo(String command) throws SineException {
+        String description = command.substring(4).trim();
+        if (description.isEmpty()) {
+            throw new SineException("The description of a todo cannot be empty.");
+        }
+        return new Todo(description);
+    }
+
+    /**
+     * Parses a deadline command and validates its description and date.
+     */
+    private Deadline parseDeadline(String command) throws SineException {
+        String details = command.substring(8).trim();
+        int byIndex = details.indexOf("/by");
+        String description = byIndex < 0 ? details : details.substring(0, byIndex).trim();
+        if (description.isEmpty()) {
+            throw new SineException("The description of a deadline cannot be empty.");
+        }
+        if (byIndex < 0 || details.substring(byIndex + 3).trim().isEmpty()) {
+            throw new SineException("The deadline of a deadline cannot be empty.");
+        }
+        String dateText = details.substring(byIndex + 3).trim();
+        try {
+            return new Deadline(description, LocalDate.parse(dateText));
+        } catch (DateTimeParseException exception) {
+            throw new SineException("Please enter the deadline as yyyy-MM-dd.");
+        }
+    }
+
+    /**
+     * Parses an event command and validates its description and time fields.
+     */
+    private Event parseEvent(String command) throws SineException {
         String details = command.substring(5).trim();
         int fromIndex = details.indexOf("/from");
         int toIndex = details.indexOf("/to", Math.max(fromIndex + 5, 0));
