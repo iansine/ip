@@ -100,4 +100,18 @@ public class TaskListTest {
 
         assertTrue(matches.isEmpty());
     }
+
+    /** Tests that search results remain an unmodifiable snapshot after later additions. */
+    @Test
+    public void find_taskListChanges_returnsUnmodifiableSnapshot() {
+        Todo original = new Todo("read book");
+        TaskList tasks = new TaskList(List.of(original));
+
+        List<Task> matches = tasks.find("book");
+        tasks.add(new Todo("return book"));
+
+        assertEquals(List.of(original), matches);
+        assertThrows(UnsupportedOperationException.class,
+                () -> matches.add(new Todo("another book")));
+    }
 }
