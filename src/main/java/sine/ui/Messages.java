@@ -14,6 +14,7 @@ public final class Messages {
             + " - mark TASK_NUMBER\n"
             + " - unmark TASK_NUMBER\n"
             + " - delete TASK_NUMBER\n"
+            + " - undo (or UNDO)\n"
             + " - bye";
 
     private Messages() {

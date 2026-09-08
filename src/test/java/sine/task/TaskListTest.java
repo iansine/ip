@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import sine.exception.SineException;
+
 /**
  * Tests task-list mutation, indexing, and collection encapsulation.
  */
@@ -113,5 +115,24 @@ public class TaskListTest {
         assertEquals(List.of(original), matches);
         assertThrows(UnsupportedOperationException.class,
                 () -> matches.add(new Todo("another book")));
+    }
+
+    /** Tests restoration by position and identity rather than matching descriptions. */
+    @Test
+    public void undo_deletedDuplicate_restoresExactTaskAndPosition() throws SineException {
+        Todo first = new Todo("same | text");
+        Todo second = new Todo("same | text");
+        second.markAsDone();
+        TaskList tasks = new TaskList(List.of(first, second));
+        tasks.delete(0);
+        tasks.setDone(0, false);
+
+        assertEquals("I marked this task as done:\n  [T][X] same | text", tasks.undo());
+        tasks.undo();
+
+        assertSame(first, tasks.get(0));
+        assertSame(second, tasks.get(1));
+        assertTrue(second.isDone());
+        assertThrows(SineException.class, tasks::undo);
     }
 }

@@ -37,6 +37,7 @@ Here's a list of commands I can do!
  - mark TASK_NUMBER
  - unmark TASK_NUMBER
  - delete TASK_NUMBER
+ - undo (or UNDO)
  - bye
 ____________________________________________________________
 ____________________________________________________________
@@ -108,6 +109,7 @@ Here's a list of commands I can do!
  - mark TASK_NUMBER
  - unmark TASK_NUMBER
  - delete TASK_NUMBER
+ - undo (or UNDO)
  - bye
 ____________________________________________________________
 ____________________________________________________________
@@ -167,6 +169,7 @@ Here's a list of commands I can do!
  - mark TASK_NUMBER
  - unmark TASK_NUMBER
  - delete TASK_NUMBER
+ - undo (or UNDO)
  - bye
 ____________________________________________________________
 ____________________________________________________________
@@ -229,6 +232,7 @@ Here's a list of commands I can do!
  - mark TASK_NUMBER
  - unmark TASK_NUMBER
  - delete TASK_NUMBER
+ - undo (or UNDO)
  - bye
 ____________________________________________________________
 ____________________________________________________________
@@ -272,6 +276,7 @@ Here's a list of commands I can do!
  - mark TASK_NUMBER
  - unmark TASK_NUMBER
  - delete TASK_NUMBER
+ - undo (or UNDO)
  - bye
 ____________________________________________________________
 ____________________________________________________________
@@ -336,6 +341,7 @@ Here's a list of commands I can do!
  - mark TASK_NUMBER
  - unmark TASK_NUMBER
  - delete TASK_NUMBER
+ - undo (or UNDO)
  - bye
 ____________________________________________________________
 ____________________________________________________________
@@ -385,6 +391,7 @@ Here's a list of commands I can do!
  - mark TASK_NUMBER
  - unmark TASK_NUMBER
  - delete TASK_NUMBER
+ - undo (or UNDO)
  - bye
 ____________________________________________________________
  Warning: I couldn't load your saved tasks. Starting with an empty list.
@@ -437,6 +444,7 @@ Here's a list of commands I can do!
  - mark TASK_NUMBER
  - unmark TASK_NUMBER
  - delete TASK_NUMBER
+ - undo (or UNDO)
  - bye
 ____________________________________________________________
 ____________________________________________________________
@@ -486,6 +494,7 @@ Here's a list of commands I can do!
  - mark TASK_NUMBER
  - unmark TASK_NUMBER
  - delete TASK_NUMBER
+ - undo (or UNDO)
  - bye
 ____________________________________________________________
 ____________________________________________________________
@@ -535,6 +544,7 @@ Here's a list of commands I can do!
  - mark TASK_NUMBER
  - unmark TASK_NUMBER
  - delete TASK_NUMBER
+ - undo (or UNDO)
  - bye
 ____________________________________________________________
 ____________________________________________________________
@@ -570,6 +580,261 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
  Error :( The search keyword cannot be empty.
+____________________________________________________________
+____________________________________________________________
+ Bye. I'll be here if you need me :)
+____________________________________________________________
+```
+
+## Test case: Undo task changes in reverse order
+
+Aim: Verify both undo spellings, all change types, and exhaustion of session history.
+
+### Inputs
+
+```text
+deadline book /by 2026-08-30
+mark 1
+unmark 1
+delete 1
+undo
+UNDO
+undo
+undo
+undo
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ ____  _            
+/ ___|(_)_ __   ___ 
+\___ \| | '_ \ / _ \
+ ___) | | | | |  __/
+|____/|_|_| |_|\___|
+Hello! I'm Sine.
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - undo (or UNDO)
+ - bye
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [D][ ] book (by: Aug 30 2026)
+ Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Great work! I've marked this task as done:
+   [D][X] book (by: Aug 30 2026)
+____________________________________________________________
+____________________________________________________________
+ Roger that. I've marked this task as not done yet:
+   [D][ ] book (by: Aug 30 2026)
+____________________________________________________________
+____________________________________________________________
+ Roger that. I've removed this task:
+   [D][ ] book (by: Aug 30 2026)
+ Now you have 0 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Understood. I undid the last task change.
+I added back this task:
+  [D][ ] book (by: Aug 30 2026)
+____________________________________________________________
+____________________________________________________________
+Understood. I undid the last task change.
+I marked this task as done:
+  [D][X] book (by: Aug 30 2026)
+____________________________________________________________
+____________________________________________________________
+Understood. I undid the last task change.
+I unmarked this task:
+  [D][ ] book (by: Aug 30 2026)
+____________________________________________________________
+____________________________________________________________
+Understood. I undid the last task change.
+I removed this task:
+  [D][ ] book (by: Aug 30 2026)
+____________________________________________________________
+____________________________________________________________
+ Error :( There is nothing to undo.
+____________________________________________________________
+____________________________________________________________
+ Bye. I'll be here if you need me :)
+____________________________________________________________
+```
+
+## Test case: Reject malformed undo without losing history
+
+Aim: Verify invalid commands and no-op unmark do not consume undo history.
+
+### Inputs
+
+```text
+todo book
+unmark 1
+list
+Undo
+undo 2
+undo
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ ____  _            
+/ ___|(_)_ __   ___ 
+\___ \| | '_ \ / _ \
+ ___) | | | | |  __/
+|____/|_|_| |_|\___|
+Hello! I'm Sine.
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - undo (or UNDO)
+ - bye
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [T][ ] book
+ Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+ Roger that. I've marked this task as not done yet:
+   [T][ ] book
+____________________________________________________________
+____________________________________________________________
+ TODO list:
+ 1.[T][ ] book
+____________________________________________________________
+____________________________________________________________
+ Error :( Usage: undo or UNDO
+____________________________________________________________
+____________________________________________________________
+ Error :( Usage: undo or UNDO
+____________________________________________________________
+____________________________________________________________
+Understood. I undid the last task change.
+I removed this task:
+  [T][ ] book
+____________________________________________________________
+____________________________________________________________
+ Bye. I'll be here if you need me :)
+____________________________________________________________
+```
+
+## Test case: Loaded tasks have no undo history
+
+Aim: Verify startup does not make saved tasks undoable.
+
+### Initial data
+
+```text
+T | 1 | saved book
+```
+
+### Inputs
+
+```text
+undo
+list
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ ____  _            
+/ ___|(_)_ __   ___ 
+\___ \| | '_ \ / _ \
+ ___) | | | | |  __/
+|____/|_|_| |_|\___|
+Hello! I'm Sine.
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - undo (or UNDO)
+ - bye
+____________________________________________________________
+____________________________________________________________
+ Error :( There is nothing to undo.
+____________________________________________________________
+____________________________________________________________
+ TODO list:
+ 1.[T][X] saved book
+____________________________________________________________
+____________________________________________________________
+ Bye. I'll be here if you need me :)
+____________________________________________________________
+```
+
+## Test case: Undo event with escaped text
+
+Aim: Verify undo preserves event fields and backslashes in display.
+
+### Inputs
+
+```text
+event compare A | B /from C:\notes /to Tue
+undo
+bye
+```
+
+### Expected output
+
+```text
+____________________________________________________________
+ ____  _            
+/ ___|(_)_ __   ___ 
+\___ \| | '_ \ / _ \
+ ___) | | | | |  __/
+|____/|_|_| |_|\___|
+Hello! I'm Sine.
+Here's a list of commands I can do!
+ - todo DESCRIPTION
+ - deadline DESCRIPTION /by YYYY-MM-DD
+ - event DESCRIPTION /from START /to END
+ - list
+ - find KEYWORD
+ - mark TASK_NUMBER
+ - unmark TASK_NUMBER
+ - delete TASK_NUMBER
+ - undo (or UNDO)
+ - bye
+____________________________________________________________
+____________________________________________________________
+ Got it. I've added this task:
+   [E][ ] compare A | B (from: C:\notes to Tue)
+ Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Understood. I undid the last task change.
+I removed this task:
+  [E][ ] compare A | B (from: C:\notes to Tue)
 ____________________________________________________________
 ____________________________________________________________
  Bye. I'll be here if you need me :)

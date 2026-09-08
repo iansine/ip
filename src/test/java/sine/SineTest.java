@@ -55,4 +55,74 @@ public class SineTest {
         assertTrue(addResponse.contains("[T][ ] borrow book"));
         assertEquals("T | 0 | borrow book", Files.readString(dataFile).strip());
     }
+
+    /** Tests reverse-order restoration, including a completed deleted task. */
+    @Test
+    public void getResponse_addMarkDeleteUndo_restoresEachState() {
+        Sine sine = new Sine(tempDir.resolve("tasks.txt").toString());
+        sine.getResponse("deadline book /by 2026-08-30");
+        sine.getResponse("mark 1");
+        sine.getResponse("delete 1");
+
+        assertEquals("Understood. I undid the last task change.\nI added back this task:"
+                + "\n  [D][X] book (by: Aug 30 2026)", sine.getResponse("undo"));
+        assertEquals("Understood. I undid the last task change.\nI unmarked this task:"
+                + "\n  [D][ ] book (by: Aug 30 2026)", sine.getResponse("UNDO"));
+        assertEquals("Understood. I undid the last task change.\nI removed this task:"
+                + "\n  [D][ ] book (by: Aug 30 2026)", sine.getResponse("undo"));
+        assertEquals("Error :( There is nothing to undo.", sine.getResponse("undo"));
+    }
+
+    /** Tests that irrelevant commands do not hide the last actual change. */
+    @Test
+    public void getResponse_noOpsAndInvalidCommands_preserveHistory() {
+        Sine sine = new Sine(tempDir.resolve("tasks.txt").toString());
+        sine.getResponse("todo book");
+        sine.getResponse("mark 1");
+        sine.getResponse("mark 1");
+        sine.getResponse("list");
+        sine.getResponse("find book");
+        sine.getResponse("todo");
+        sine.getResponse("unknown");
+        sine.getResponse("undo 2");
+
+        assertTrue(sine.getResponse("undo").contains("I unmarked this task:"));
+        sine.getResponse("unmark 1");
+        assertTrue(sine.getResponse("undo").contains("I removed this task:"));
+    }
+
+    /** Tests a new change after undo and persistence without history across restarts. */
+    @Test
+    public void getResponse_newChangeAfterUndo_preservesOlderHistory() throws IOException {
+        Path dataFile = tempDir.resolve("tasks.txt");
+        Sine sine = new Sine(dataFile.toString());
+        sine.getResponse("todo first");
+        sine.getResponse("todo second");
+        sine.getResponse("undo");
+        sine.getResponse("event meeting /from Mon /to Tue");
+        assertTrue(sine.getResponse("undo").contains("[E][ ] meeting (from: Mon to Tue)"));
+        assertEquals("T | 0 | first", Files.readString(dataFile).strip());
+
+        Sine restarted = new Sine(dataFile.toString());
+        assertEquals("Error :( There is nothing to undo.", restarted.getResponse("undo"));
+        assertTrue(restarted.getResponse("list").contains("[T][ ] first"));
+        assertTrue(sine.getResponse("undo").contains("[T][ ] first"));
+    }
+
+    /** Tests that save failures retain memory changes and consume undo history once. */
+    @Test
+    public void getResponse_savingFails_undoStillReversesMemoryChange() throws IOException {
+        Path dataFile = tempDir.resolve("tasks.txt");
+        Sine sine = new Sine(dataFile.toString());
+        sine.getResponse("list");
+        // A directory at the file path makes saving fail without relying on OS permissions.
+        Files.createDirectory(dataFile);
+        assertTrue(sine.getResponse("todo book").contains("I couldn't save that change."));
+
+        assertEquals("Understood. I undid the last task change.\nI removed this task:"
+                + "\n  [T][ ] book\n Error :( I couldn't save that change."
+                + " It is available only for this session.", sine.getResponse("undo"));
+        assertEquals("Error :( There is nothing to undo.", sine.getResponse("undo"));
+        assertEquals("TODO list:", sine.getResponse("list"));
+    }
 }
