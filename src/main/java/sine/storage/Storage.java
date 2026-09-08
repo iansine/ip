@@ -58,21 +58,30 @@ public class Storage {
      */
     public void save(List<Task> tasks) throws IOException {
         Files.createDirectories(dataFile.getParent());
-        List<String> lines = new ArrayList<>();
-        for (Task task : tasks) {
-            String status = task.isDone() ? "1" : "0";
-            if (task instanceof Deadline deadline) {
-                lines.add("D | " + status + " | " + encodeField(task.getDescription())
-                        + " | " + deadline.getBy());
-            } else if (task instanceof Event event) {
-                lines.add("E | " + status + " | " + encodeField(task.getDescription())
-                        + " | " + encodeField(event.getFrom())
-                        + " | " + encodeField(event.getTo()));
-            } else {
-                lines.add("T | " + status + " | " + encodeField(task.getDescription()));
-            }
-        }
+        List<String> lines = tasks.stream()
+                .map(this::formatStoredTask)
+                .toList();
         Files.write(dataFile, lines);
+    }
+
+    /**
+     * Formats one task as a storage record, escaping text fields as needed.
+     *
+     * @param task Task to encode.
+     * @return Storage record containing the task's type, status, and details.
+     */
+    private String formatStoredTask(Task task) {
+        String status = task.isDone() ? "1" : "0";
+        if (task instanceof Deadline deadline) {
+            return "D | " + status + " | " + encodeField(task.getDescription())
+                    + " | " + deadline.getBy();
+        }
+        if (task instanceof Event event) {
+            return "E | " + status + " | " + encodeField(task.getDescription())
+                    + " | " + encodeField(event.getFrom())
+                    + " | " + encodeField(event.getTo());
+        }
+        return "T | " + status + " | " + encodeField(task.getDescription());
     }
 
     /**
