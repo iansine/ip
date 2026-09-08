@@ -40,4 +40,19 @@ public class SineTest {
 
         assertEquals("Error :( The description of a todo cannot be empty.", response);
     }
+
+    /** Tests that failed loading still initializes usable state for subsequent commands. */
+    @Test
+    public void getResponse_malformedSavedData_recoversAndAcceptsCommands() throws IOException {
+        Path dataFile = tempDir.resolve("sine.txt");
+        Files.writeString(dataFile, "D | 0 | return book | 2026-02-30");
+        Sine sine = new Sine(dataFile.toString());
+
+        String firstResponse = sine.getResponse("list");
+        String addResponse = sine.getResponse("todo borrow book");
+
+        assertTrue(firstResponse.contains("Starting with an empty list."));
+        assertTrue(addResponse.contains("[T][ ] borrow book"));
+        assertEquals("T | 0 | borrow book", Files.readString(dataFile).strip());
+    }
 }
